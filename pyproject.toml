@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=64.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vinecopula"
+version = "0.1"
+authors = [
+    {name = "Judith Claassen", email = "j.n.claassen@vu.nl"},
+]
+
+license = {text = "GNU GENERAL PUBLIC LICENSE Version 3"}
+description = ""
+keywords = [""]
+classifiers=[
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering :: GIS",
+        "Topic :: Utilities",
+    ]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "scipy",	
+    "numpy",
+    "pandas",
+    "matplotlib"
+]
+
+[tool.setuptools.package-data]
+"*" = ["*.ini"]
+
+[project.optional-dependencies]
+tests = ["pytest"]
+docs = ["jupyter"]
+
+[project.urls]
+"Homepage" = "https://github.com/IVM-VU/vinecopula"
+"Documentation" = "https://vinecopula.readthedocs.io/en/latest/"
