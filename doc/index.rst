@@ -5,7 +5,7 @@ A Python package for vine copulas.
 
 .. note::
 
-   This project is under active development.
+   This project is under active development. 
 
 Contents
 --------
