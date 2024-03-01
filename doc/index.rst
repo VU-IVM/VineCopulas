@@ -14,5 +14,4 @@ Contents
    :maxdepth: 1
 
    Home <self>
-   bivariatecopulas
-   vinecopulas
+   0_basic_usage

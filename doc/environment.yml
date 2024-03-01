@@ -2,6 +2,7 @@ name: vinecopula
 
 channels:
     - conda-forge
+    - defaults
 
 dependencies:
         - python=3.11
@@ -15,4 +16,3 @@ dependencies:
         - sphinx
         - sphinx-autoapi>=3.0
         - sphinx-rtd-theme
-        - python=3.11
