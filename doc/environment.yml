@@ -10,3 +10,9 @@ dependencies:
         - matplotlib
         - scipy
         - networkx
+        - jupyter
+        - nbsphinx
+        - sphinx
+        - sphinx-autoapi>=3.0
+        - sphinx-rtd-theme
+        - python=3.11
