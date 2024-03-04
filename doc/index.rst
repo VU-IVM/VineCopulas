@@ -14,4 +14,5 @@ Contents
    :maxdepth: 1
 
    Home <self>
+   bivariatecopulas
    vinecopulas
