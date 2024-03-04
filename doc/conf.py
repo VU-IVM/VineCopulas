@@ -42,8 +42,8 @@ extensions = [
     "autoapi.extension",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
-    'sphinx.ext.jsmath',
-    "nbsphinx"   
+    "nbsphinx",
+    "sphinx.ext.mathjax"   
 ]
 
 
