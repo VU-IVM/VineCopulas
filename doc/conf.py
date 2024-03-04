@@ -42,7 +42,7 @@ extensions = [
     "autoapi.extension",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
-    'sphinx.ext.pngmath',
+    'sphinx.ext.jsmath',
     "nbsphinx"   
 ]
 
