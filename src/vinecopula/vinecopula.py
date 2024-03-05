@@ -320,7 +320,7 @@ def vinecop(u1, copsi, vine ='R', printing = True):
                             except: 
                                 pass
                         
-                            for s in l1:
+                            for s in l2:
                                 try:
                                     ln.remove(s)
                                 except:
@@ -573,7 +573,7 @@ def vinecop(u1, copsi, vine ='R', printing = True):
                                     except: 
                                         pass
                                 
-                                    for s in l1:
+                                    for s in l2:
                                         try:
                                             ln.remove(s)
                                         except:
@@ -968,7 +968,7 @@ def vinecopstructure(u1, copsi,a):
                     p[i,k] = orderj.rhos.iloc[0]
                     c[i,k] =  orderj.cop.iloc[0]
     return p,c 
-
+#%%
 
 def copconditional(u1, vint, copsi):
     """
@@ -2041,7 +2041,7 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
                     skip = False
                     if order1.v2[k] in Y2:
                         
-                        numapear = sum(((order2['v1'].apply(lambda x: order2.v1[k]== x )) | (order2['v2'].apply(lambda x: order2.v1[k]== x))))
+                        numapear = sum(((order2['v1'].apply(lambda x: order1.v2[k]== x )) | (order2['v2'].apply(lambda x: order1.v2[k]== x))))
                         for i in Y:
                             if numapear == sum(((order2['v1'].apply(lambda x: i== x )) | (order2['v2'].apply(lambda x: i== x)))):
                                 skip = True
@@ -2338,7 +2338,7 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
                             except: 
                                 pass
                         
-                            for s in l1:
+                            for s in l2:
                                 try:
                                     ln.remove(s)
                                 except:
@@ -2410,7 +2410,7 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
                             except: 
                                 pass
                         
-                            for s in l1:
+                            for s in l2:
                                 try:
                                     ln.remove(s)
                                 except:
@@ -2693,7 +2693,7 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
                                     except: 
                                         pass
                                 
-                                    for s in l1:
+                                    for s in l2:
                                         try:
                                             ln.remove(s)
                                         except:
@@ -2781,7 +2781,7 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
                                     except: 
                                         pass
                                 
-                                    for s in l1:
+                                    for s in l2:
                                         try:
                                             ln.remove(s)
                                         except:
@@ -2797,24 +2797,24 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
                                 continue
                             #if (len(l1) > 1 and len(l2) >0) or (len(l1) > 0 and len(l2) >1):
                                 #continue
-                            if orderk.iloc[z].v1 in X2 and orderk.iloc[z].v2 in X2:
-                                skip = False
-                                if orderk.iloc[z].v2 in Y3:
+                            #if orderk.iloc[z].v1 in X2 and orderk.iloc[z].v2 in X2:
+                                #skip = False
+                                #if orderk.iloc[z].v2 in Y3:
                                     
-                                    numapear = sum(((order['v1'].apply(lambda x: orderk.iloc[z].v2== x )) | (order['v2'].apply(lambda x: orderk.iloc[z].v2== x))))
-                                    for i in Y2:
-                                        if numapear == sum(((order['v1'].apply(lambda x: i== x )) | (order['v2'].apply(lambda x: i== x)))):
-                                            skip = True
-                                            break
-                                elif orderk.iloc[z].v1 in Y3:
+                                    #numapear = sum(((order['v1'].apply(lambda x: orderk.iloc[z].v2== x )) | (order['v2'].apply(lambda x: orderk.iloc[z].v2== x))))
+                                   # for i in Y2:
+                                     #   if numapear == sum(((order['v1'].apply(lambda x: i== x )) | (order['v2'].apply(lambda x: i== x)))):
+                                       #     skip = True
+                                      #      break
+                                #elif orderk.iloc[z].v1 in Y3:
                                     
-                                    numapear = sum(((order['v1'].apply(lambda x: orderk.iloc[z].v1== x )) | (order['v2'].apply(lambda x: orderk.iloc[z].v1== x))))
-                                    for i in Y2:
-                                        if numapear ==  sum(((order['v1'].apply(lambda x: i== x )) | (order['v2'].apply(lambda x: i== x)))):
-                                            skip = True
-                                            break
-                                if skip == True:
-                                    continue
+                                 #   numapear = sum(((order['v1'].apply(lambda x: orderk.iloc[z].v1== x )) | (order['v2'].apply(lambda x: orderk.iloc[z].v1== x))))
+                                  #  for i in Y2:
+                                  #      if numapear ==  sum(((order['v1'].apply(lambda x: i== x )) | (order['v2'].apply(lambda x: i== x)))):
+                                  #          skip = True
+                                  #          break
+                                #if skip == True:
+                                #    continue
                             if len(lst) == len(set(lst)):
                                 order = pd.concat([order, orderk.loc[z].to_frame().T], ignore_index=True)
                                 inde.append(z)
