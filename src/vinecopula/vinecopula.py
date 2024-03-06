@@ -36,20 +36,21 @@ def vinecop(u1, copsi, vine ='R', printing = True):
     Fit a regular vine copula to data.
     
     Arguments:
-        
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
+
         *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
+
         *vine* : The type of vine copula that needs to be fit, either 'R', 'D', or 'C'
+        
         *printing*: True if the fitted copula should be printed and False if not
         
     
-     Returns:  
+    Returns:  
+     *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
          
-         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+     *p* : Parameters of the bivariate copulae provided as a triangular matrix.
          
-         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-         
-         *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
 
     """
     #Reference: Dißmann et al. 2013

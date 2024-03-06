@@ -673,8 +673,8 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         
         *un* : indicated with respect to which variable the h-function has to be calculated. if un = 1, the h-function is calculated with respect to u1 (c(u2|u1)), if un = 2, the h-function is calculated with respect to u2 (c(u1|u2)).
      
-     Returns:  
-      *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
+    Returns:  
+     *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
       
     """
 

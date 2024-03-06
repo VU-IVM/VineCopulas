@@ -29,6 +29,7 @@ def best_fit_distributiondiscrete(data, bound = False):
     
     Arguments:
         *data* : The data which has to be fit as a 1-d numpy array.
+
         *bounds* : whether the data is bounded
      
     Returns:  
@@ -122,6 +123,7 @@ def best_fit_distribution(data):
     
     Arguments:
         *data* : The data which has to be fit as a 1-d numpy array.
+
      
     Returns:  
      *bestdist* : the best distribution and its parameters.
@@ -193,7 +195,8 @@ def pseudodata(data):
     
     Arguments:
         *data* : The data which has to be converted into psuedo data, provided as a numpy array where each column contains a seperate variable (eg. x1,x2,...,xn)
-     
+        
+
     Returns:  
      *u* : Psuedo data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un)
     """
