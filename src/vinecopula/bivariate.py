@@ -295,7 +295,6 @@ def CDF(cop, u, par):
     Computes the cumulative distribution function.
     
     Arguments:
-        
         *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the CDF will be calculated. Column 1 contains variable u1, and column 2 contains variable u2.
@@ -303,8 +302,7 @@ def CDF(cop, u, par):
         *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
      
     Returns:  
-         
-         *p* : A 1-d numpy array containing the cumulative distribution function of the copula evaluated at u1 and u2.
+     *p* : A 1-d numpy array containing the cumulative distribution function of the copula evaluated at u1 and u2.
       
     """
     # Gaussian
@@ -415,7 +413,6 @@ def PDF(cop, u, par):
     Computes the probability density function.
     
     Arguments:
-        
         *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the PDF will be calculated. Column 1 contains variable u1, and column 2 contains variable u2.
@@ -423,8 +420,7 @@ def PDF(cop, u, par):
         *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
      
     Returns:  
-         
-         *y* : A 1-d numpy array containing the probability density function of the copula evaluated at u1 and u2.
+     *y* : A 1-d numpy array containing the probability density function of the copula evaluated at u1 and u2.
       
     """
     u[u <= 0 ] = 0.00001
@@ -517,7 +513,6 @@ def hfunc(cop, u1, u2, par, un = 1):
     Computes the h-function (conditional CDF) of a copula with respect to variable u1 or u2.
     
     Arguments:
-        
         *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
         
         *u1* : A 1-d numpy array containing the samples of variable u1
@@ -529,8 +524,7 @@ def hfunc(cop, u1, u2, par, un = 1):
         *un* : indicated with respect to which variable the h-function has to be calculated. if un = 1, the h-function is calculated with respect to u1 (c(u2|u1)), if un = 2, the h-function is calculated with respect to u2 (c(u1|u2)).
      
     Returns:  
-         
-         *y* : A 1-d numpy array containing the h-function of the copula evaluated with respect to u1 or u2.
+     *y* : A 1-d numpy array containing the h-function of the copula evaluated with respect to u1 or u2.
       
     """
     u1[u1 <=0] = 0.000001
@@ -669,7 +663,6 @@ def hfuncinverse(cop, ui, y, par, un = 1):
     Computes the inverse h-function (inverse conditional CDF) of a copula with respect to variable u1 or u2.
     
     Arguments:
-        
         *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *ui* : A 1-d numpy array containing the samples of variable u1, if evaluated with respect to u1, or u2 if evaluated with respect to u2.
@@ -681,8 +674,7 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         *un* : indicated with respect to which variable the h-function has to be calculated. if un = 1, the h-function is calculated with respect to u1 (c(u2|u1)), if un = 2, the h-function is calculated with respect to u2 (c(u1|u2)).
      
      Returns:  
-         
-         *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
+      *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
       
     """
 
@@ -782,7 +774,6 @@ def neg_likelihood(par,cop,u):
     Computes the negative likelihood function.
     
     Arguments:
-        
         *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the CDF will be calculated. Column 1 contains variable u1, and column 2 contains variable u2.
@@ -790,8 +781,7 @@ def neg_likelihood(par,cop,u):
         *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
      
     Returns:  
-         
-         *l* : The negative likelihood as a scalar value.
+     *l* : The negative likelihood as a scalar value.
       
     """
     l = -np.sum(np.log(PDF(cop, u, par)))
@@ -804,15 +794,13 @@ def fit(cop, u):
     Fits a specific copula to data.
     
     Arguments:
-        
         *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the copulae will be fit. Column 1 contains variable u1, and column 2 contains variable u2.
      
      
     Returns:  
-         
-         *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+     *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
       
     """
     u[u==1] = 0.999999
@@ -883,19 +871,17 @@ def bestcop(cops, u):
     Fits the best copula to data based on a selected list of copulas to fit to using the AIC.
     
     Arguments:
-        
         *cops* : A list of integers refering to the copulae of interest for which the fit has to be evauluated. eg. a list of [1, 10] refers to the Gaussian and Frank copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the copulae will be fit and evaluated. Column 1 contains variable u1, and column 2 contains variable u2.
      
      
     Returns:  
+     *cop* : An integer refering to the copula with the best fit. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
          
-         *cop* : An integer refering to the copula with the best fit. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+     *par* : The correlation parameters of the copula with the best fit, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
          
-         *par* : The correlation parameters of the copula with the best fit, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
-         
-         *aic* : The Akaike information criterion of the copula with the best fit.
+     *aic* : The Akaike information criterion of the copula with the best fit.
       
     """
     

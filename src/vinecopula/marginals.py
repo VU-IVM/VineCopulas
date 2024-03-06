@@ -32,7 +32,7 @@ def best_fit_distributiondiscrete(data, bound = False):
         *bounds* : whether the data is bounded
      
     Returns:  
-        *bestdist* : the best distribution and its parameters.
+     *bestdist* : the best distribution and its parameters.
     """
 
     # distributions
@@ -124,7 +124,7 @@ def best_fit_distribution(data):
         *data* : The data which has to be fit as a 1-d numpy array.
      
     Returns:  
-        *bestdist* : the best distribution and its parameters.
+     *bestdist* : the best distribution and its parameters.
     """
     # distributions
     distributions = {
@@ -195,7 +195,7 @@ def pseudodata(data):
         *data* : The data which has to be converted into psuedo data, provided as a numpy array where each column contains a seperate variable (eg. x1,x2,...,xn)
      
     Returns:  
-        *u* : Psuedo data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un)
+     *u* : Psuedo data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un)
     """
     
     ranks = np.apply_along_axis(rankdata, axis=0, arr=data)
@@ -216,8 +216,9 @@ def pseudodiscr(xcdf, xpmf):
         *xpmf* : The probability mass function of the variable, calculated based on the best fit discrete distribution, provided as a 1-d numpy array.
      
     Returns:  
-        *ui* : Psuedo data of a given variable  provided as a 1-d numpy array.
+     *ui* : Psuedo data of a given variable  provided as a 1-d numpy array.
     """
+
     #Reference: Mitskopoulos et al. 2022 
     u113 = xcdf - xpmf
     ru = np.random.uniform(0,1,len(xcdf))
