@@ -28,12 +28,10 @@ def best_fit_distributiondiscrete(data, bound = False):
     Fits the best discrete distribution to data.
     
     Arguments:
-        
         *data* : The data which has to be fit as a 1-d numpy array.
         *bounds* : whether the data is bounded
      
     Returns:  
-         
         *bestdist* : the best distribution and its parameters.
     """
 
@@ -123,11 +121,9 @@ def best_fit_distribution(data):
     Fits the best continious distribution to data.
     
     Arguments:
-        
         *data* : The data which has to be fit as a 1-d numpy array.
      
     Returns:  
-         
         *bestdist* : the best distribution and its parameters.
     """
     # distributions
@@ -196,11 +192,9 @@ def pseudodata(data):
     Compute the pseudo-observations for the given data (tranfers data to standard uniform margins)
     
     Arguments:
-        
         *data* : The data which has to be converted into psuedo data, provided as a numpy array where each column contains a seperate variable (eg. x1,x2,...,xn)
      
     Returns:  
-         
         *u* : Psuedo data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un)
     """
     
@@ -217,13 +211,11 @@ def pseudodiscr(xcdf, xpmf):
     Compute the pseudo-observations for the given variable that is discrete.
     
     Arguments:
-        
         *xcdf* : The cumulative distribution function of the variable, calculated based on the best fit discrete distribution, provided as a 1-d numpy array.
         
         *xpmf* : The probability mass function of the variable, calculated based on the best fit discrete distribution, provided as a 1-d numpy array.
      
     Returns:  
-         
         *ui* : Psuedo data of a given variable  provided as a 1-d numpy array.
     """
     #Reference: Mitskopoulos et al. 2022 
