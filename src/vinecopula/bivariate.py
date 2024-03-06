@@ -146,22 +146,23 @@ def randomconditional(cop, ui, par, n, un = 1):
     
     Arguments:
         
-        *cop* : An integer reffering to the copula of choice. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
         
         *ui* : A 1-d numpy array containing the samples of variable u1, if evaluated with respect to u1, or u2 if evaluated with respect to u2 on which conditional samples should be computed
         
      
-        *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see...reffer to where this information would be)
+        *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
         
         *n*: number of samples to draw 
         
-        *un* : indicated with respect to which variable the conditional samples have to ve drawn. if un = 1, onditional samples of u2 will be drawn based on u1, if un = 2, onditional samples of u1 will be drawn based on u2.
+        *un* : indicated with respect to which variable the conditional samples have to be drawn. if un = 1, conditional samples of u2 will be drawn based on u1, if un = 2, conditional samples of u1 will be drawn based on u2.
      
      Returns:  
          
          *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
       
     """
+
     # Gaussian
     if cop == 1:
         ui = np.full(shape = n, fill_value = ui)
