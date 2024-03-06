@@ -41,7 +41,7 @@ def vinecop(u1, copsi, vine ='R', printing = True):
         *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
 
         *vine* : The type of vine copula that needs to be fit, either 'R', 'D', or 'C'
-        
+
         *printing*: True if the fitted copula should be printed and False if not
         
     
@@ -775,17 +775,16 @@ def vinecopstructure(u1, copsi,a):
     Fit a regular vine copula to data based on a known vine structure
     
     Arguments:
-        
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
-        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
-        *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
-     Returns:  
-         
         
+        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
+        
+        *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+     
+    Returns:  
+     *p* : Parameters of the bivariate copulae provided as a triangular matrix.
          
-         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-         
-         *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
 
     """
     
@@ -976,18 +975,18 @@ def copconditional(u1, vint, copsi):
     Fit a regular vine copula which allows for a conditional sample of a variable of interest.
     
     Arguments:
-        
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
+        
         *vint* : the variable of interest, provided as an integere that reffers to the variables column number in u1, where the first column is 0 and the second column is 1, etc.
+        
         *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
      
-     Returns:  
+    Returns:  
+     *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
          
-         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+     *p* : Parameters of the bivariate copulae provided as a triangular matrix.
          
-         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-         
-         *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
 
     """
     v1 = []
@@ -1472,7 +1471,6 @@ def samplecop(a, p,  c, s):
     Generate random samples from an R-vine.
     
     Arguments:
-        
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
         
         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
@@ -1483,8 +1481,8 @@ def samplecop(a, p,  c, s):
         
        
      
-     Returns:  
-         *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
+    Returns:  
+     *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
          
     """
     # Reference: Dißmann et al. 2012 
@@ -1564,19 +1562,18 @@ def vincopconditionalsample(a, p,c, s, Xc):
    Generate conditional samples from an R-vine based on a provided sampling order
    
    Arguments:
+        *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
        
-       *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+        *p* : Parameters of the bivariate copulae provided as a triangular matrix.
        
-       *p* : Parameters of the bivariate copulae provided as a triangular matrix.
+        *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
        
-       *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+        *s* : number of samples to generate, provided as a positive scalar integer.
        
-       *s* : number of samples to generate, provided as a positive scalar integer.
-       
-       *XC*: the values of the variables on which the conditional sample has to generated, provided as a 1d array that contains the the values ordered in terms of the sampling order. 
+        *XC*: the values of the variables on which the conditional sample has to generated, provided as a 1d array that contains the the values ordered in terms of the sampling order. 
     
     Returns:  
-        *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
+     *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
         
    """ 
    Ms =  np.flipud(a)
@@ -1654,7 +1651,6 @@ def samplingorder(a):
     Provides all the different sampling orders that are possible for the fitted vine-copula.
     
     Arguments:
-        
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
         
         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
@@ -1663,8 +1659,8 @@ def samplingorder(a):
         
        
      
-     Returns:  
-         *sortingorder* :  A list of the different sampling orders available for the fitted vine-copula
+    Returns:  
+     *sortingorder* :  A list of the different sampling orders available for the fitted vine-copula
          
     """
     
@@ -1723,7 +1719,6 @@ def samplingmatrix(a,c,p,sorder):
     Provides the triangular matrices for which the samples can be generated based on the specific sampling order.
     
     Arguments:
-        
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
         
         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
@@ -1732,12 +1727,12 @@ def samplingmatrix(a,c,p,sorder):
         
         *sorder* :  A list containing the specific sampling order of interest
      
-     Returns:  
-         *ai* : The vine tree structure, based on the sampling order, provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+    Returns:  
+     *ai* : The vine tree structure, based on the sampling order, provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
          
-         *pi* : Parameters of the bivariate copulae, based on the sampling order,  provided as a triangular matrix.
+     *pi* : Parameters of the bivariate copulae, based on the sampling order,  provided as a triangular matrix.
          
-         *ci* : The types of the bivariate copulae, based on the sampling order,  provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *ci* : The types of the bivariate copulae, based on the sampling order,  provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
          
     """
     
@@ -1812,20 +1807,23 @@ def conditionalvine(u1, vint, copsi, vine ='R', condition = 1, printing = True):
     Fit a regular vine copula which allows for a conditional sample of a variable of interest.
     
     Arguments:
-        
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
+        
         *vint* : the variables of interest, provided as an integere or list that reffers to the variables column numbers in u1, where the first column is 0 and the second column is 1, etc.
+        
         *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
+        
         *vine* : The type of vine copula that needs to be fit, either 'R', 'D', or 'C'
+        
         *condition* : condition = 1 indicates that vint needs to be the conditionalized variables (at the end of the sampling order), condition = 2 indicates that vint need to be the conditioning variables (at the start of the sampling order)
+        
         *printing*: True if the fitted copula should be printed and False if not
      Returns:  
+     *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
          
-         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+     *p* : Parameters of the bivariate copulae provided as a triangular matrix.
          
-         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-         
-         *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
 
     """
     
@@ -2999,12 +2997,14 @@ def plotvine(a, plottitle = None, variables = None, savepath = None):
     Plots the vine structure
     
     Arguments:
-        
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+        
         *pltotitle* : title of the plot
+        
         *savepath* : path to save the plot
         
-     Returns:  
+     Returns: 
+      *plot* 
          
          
 
