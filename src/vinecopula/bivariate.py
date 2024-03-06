@@ -30,16 +30,17 @@ def random(cop, par, n):
     Generates random numbers from a chosen copula with specific parameters.
     
     Arguments:
-        *cop* : An integer reffering to the copula of choice. eg. a 1 reffers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
      
-        *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see...reffer to where this information would be)
+        *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
      
-        *n* : Number of random samples to return, specified a postive integer.
+        *n* : Number of random samples to return, specified a positive integer.
      
      Returns:    
      *u* : A 2-d numpy array containing random samples with n amount of rows. Column 1 contains variable u1, and column 2 contains variable u2.
       
     """
+
     
     # Gaussian
     if cop == 1:
