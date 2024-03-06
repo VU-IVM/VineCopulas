@@ -141,11 +141,11 @@ def random(cop, par, n):
 #%% Copula conditional random
        
 def randomconditional(cop, ui, par, n, un = 1):
+
     """
     Generates conditional random numbers from a chosen copula with specific parameters.
     
     Arguments:
-        
         *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
         
         *ui* : A 1-d numpy array containing the samples of variable u1, if evaluated with respect to u1, or u2 if evaluated with respect to u2 on which conditional samples should be computed
@@ -158,8 +158,7 @@ def randomconditional(cop, ui, par, n, un = 1):
         *un* : indicated with respect to which variable the conditional samples have to be drawn. if un = 1, conditional samples of u2 will be drawn based on u1, if un = 2, conditional samples of u1 will be drawn based on u2.
      
     Returns:  
-         
-         *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
+        *uii* : A 1-d numpy array containing the inverse h-function of the copula evaluated with respect to u1 or u2.
       
     """
 
