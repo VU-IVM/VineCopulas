@@ -1,0 +1,84 @@
+
+@article{Mitskopoulos2022,
+abstract = {Recordings of complex neural population responses provide a unique opportunity for advancing our understanding of neural information processing at multiple scales and improving performance of brain computer interfaces. However, most existing analytical techniques fall short of capturing the complexity of interactions within the concerted population activity. Vine copula-based approaches have shown to be successful at addressing complex high-order dependencies within the population, disentangled from the single-neuron statistics. However, most applications have focused on parametric copulas which bear the risk of misspecifying dependence structures. In order to avoid this risk, we adopted a fully non-parametric approach for the single-neuron margins and copulas by using Neural Spline Flows (NSF). We validated the NSF framework on simulated data of continuous and discrete types with various forms of dependency structures and with different dimensionality. Overall, NSFs performed similarly to existing non-parametric estimators, while allowing for considerably faster and more flexible sampling which also enables faster Monte Carlo estimation of copula entropy. Moreover, our framework was able to capture low and higher order heavy tail dependencies in neuronal responses recorded in the mouse primary visual cortex during a visual learning task while the animal was navigating a virtual reality environment. These findings highlight an often ignored aspect of complexity in coordinated neuronal activity which can be important for understanding and deciphering collective neural dynamics for neurotechnological applications.},
+author = {Mitskopoulos, Lazaros and Amvrosiadis, Theoklitos and Onken, Arno},
+doi = {10.3389/fnins.2022.910122},
+file = {:C\:/Users/jcl202/Documents/Phd/Lit/fnins-16-910122.pdf:pdf},
+issn = {1662453X},
+journal = {Frontiers in Neuroscience},
+keywords = {Neural Spline Flows,heavy tail dependencies,higher-order dependencies,mixed variables,neural dependencies,vine copula flows},
+title = {{Mixed vine copula flows for flexible modeling of neural dependencies}},
+volume = {16},
+year = {2022}
+}
+
+@book{Joe2014,
+address = {New York},
+author = {Joe, Harry},
+doi = {https://doi.org/10.1201/b17116},
+edition = {1st},
+isbn = {9780429103186},
+publisher = {Chapman and Hall/CRC},
+title = {{Dependence Modeling with Copulas}},
+year = {2014}
+}
+
+@article{Czado2022,
+abstract = {With the availability of massive multivariate data comes a need to develop flexible multivariate distribution classes. The copula approach allows marginal models to be constructed for each variable separately and joined with a dependence structure characterized by a copula. The class of multivariate copulas was limited for a long time to elliptical (including the Gaussian and t-copula) and Archimedean families (such as Clayton and Gumbel copulas). Both classes are rather restrictive with regard to symmetry and tail dependence properties. The class of vine copulas overcomes these limitations by building a multivariate model using only bivariate building blocks. This gives rise to highly flexible models that still allow for computationally tractable estimation and model selection procedures. These features made vine copula models quite popular among applied researchers in numerous areas of science. This article reviews the basic ideas underlying these models, presents estimation and model selection approaches, and discusses current developments and future directions.},
+author = {Czado, Claudia and Nagler, Thomas},
+doi = {10.1146/annurev-statistics-040220-101153},
+file = {:C\:/Users/jcl202/Documents/Phd/Lit/vinecopulas/vine-arisa.pdf:pdf},
+issn = {2326831X},
+journal = {Annual Review of Statistics and Its Application},
+keywords = {copula,dependence,distribution,multivariate,tail,vine},
+pages = {453--477},
+title = {{Vine Copula Based Modeling}},
+volume = {9},
+year = {2021}
+}
+
+@Manual{copulapackage,
+    title = {copula: Multivariate Dependence with Copulas},
+    author = {Marius Hofert and Ivan Kojadinovic and Martin Maechler
+      and Jun Yan},
+    year = {2023},
+    note = {R package version 1.1-3},
+    url = {https://CRAN.R-project.org/package=copula},
+  }
+
+@Manual{vinecopulapackage,
+    title = {VineCopula: Statistical Inference of Vine Copulas},
+    author = {Thomas Nagler and Ulf Schepsmeier and Jakob Stoeber and Eike Christian Brechmann and Benedikt Graeler and Tobias Erhardt and Carlos Almeida and Aleksey Min and Claudia Czado and Mathias Hofmann and Matthias Killiches and Harry Joe and Thibault Vatter},
+    year = {2023},
+    note = {R package version 2.5.0},
+    url = {https://cran.r-project.org/web/packages/VineCopula/index.html},
+  }
+
+
+@Manual{Bevacqua,
+    title = {CDVineCopulaConditional: Sampling from Conditional C- and D-Vine Copulas},
+    author = {Emanuele Bevacqua},
+    year = {2017},
+    note = {R package version 0.1.0},
+    url = {https://CRAN.R-project.org/package=CDVineCopulaConditional},
+  }
+
+
+@misc{pyvinecoplib,
+  doi = {10.5281/ZENODO.10435751},
+  url = {https://zenodo.org/doi/10.5281/zenodo.10435751},
+  author = {Nagler,  Thomas and Vatter,  Thibault},
+  keywords = {dependence,  copula,  vine,  pair copula construction,  simulation},
+  title = {pyvinecopulib},
+  publisher = {Zenodo},
+  year = {2023},
+  copyright = {MIT License}
+}
+
+@misc{inc_copulas,
+  author = {Inc, DataCebo},
+  title = {copulas: Create tabular synthetic data using copulas-based modeling.},
+  url = {https://pypi.org/project/copulas/},
+  urldate = {2024-03-07},
+  organization = {PyPI}
+}
