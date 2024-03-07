@@ -1,9 +1,10 @@
+
 ---
-title: 'VineCopulas: nice title here'
+title: 'VineCopulas: .....'
 tags:
-  - machine-learning
-  - data-science
-  - python
+  - Python
+  - copula
+  - statistics
 authors:
   - name: Judith N. Claassen
     orcid: 0009-0000-2979-1297
@@ -11,13 +12,12 @@ authors:
   - name: Wiebke S. Jäger
     orcid: 0009-0007-8628-6060
     affiliation: 1
-    - name: Elco E. Koks
+  - name: Elco E. Koks
     orcid: 0000-0002-4953-4527
     affiliation: 1
 affiliations:
  - name: Institute for Environmental Studies, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
    index: 1
-
 date: 7 March 2024
 bibliography: paper.bib
 ---
