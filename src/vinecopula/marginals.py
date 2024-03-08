@@ -117,7 +117,7 @@ def best_fit_distributiondiscrete(data, bound = False):
     return bestdist
 #%% best fit distribution
 
-def best_fit_distribution(data):
+def best_fit_distribution(data, criterion == "BIC"):
     """
     Fits the best continious distribution to data.
     
