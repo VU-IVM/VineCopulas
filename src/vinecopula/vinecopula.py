@@ -21,8 +21,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import sys
 import os
-os.chdir('C:/Users/jcl202/Documents/Phd/Data_exploration/Copulas/')
-from bivariate import *
+from vinecopula.bivariate import *
 #%% Copulas
 
 copulas = {1: 'Gaussian', 2 : 'Gumbel0', 3 :'Gumbel90' , 4 : 'Gumbel180', 5 : 'Gumbel270', 6 : 'Clayton0', 7 : 'Clayton90', 8 : 'Clayton180', 9: 'Clayton270', 10: 'Frank', 11: 'Joe0', 12: 'Joe90', 13: 'Joe180', 14: 'Joe270', 15: 'Student'} 
