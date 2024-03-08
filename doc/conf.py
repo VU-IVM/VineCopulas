@@ -23,7 +23,7 @@ module_dir = os.path.join(__location__, "../src/vinecopula")
 project = 'vinecopula'
 copyright = '2023, authors'
 #logo_only = True
-#html_logo = 'logo_osm-flex.png'
+html_logo = 'logo.png'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'
