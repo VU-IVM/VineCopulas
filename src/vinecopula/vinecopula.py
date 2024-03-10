@@ -11,16 +11,9 @@ warnings.filterwarnings("ignore")
 import numpy as np
 import pandas as pd
 import scipy.stats as st
-from scipy.stats import rankdata
-from scipy.optimize import newton
-from scipy.optimize import minimize_scalar
-from scipy.special import gammaln
-from scipy.linalg import cholesky
 from itertools import product
 import networkx as nx
 import matplotlib.pyplot as plt
-import sys
-import os
 from vinecopula.bivariate import *
 #%% Copulas
 
@@ -37,7 +30,7 @@ def vinecop(u1, copsi, vine ='R', printing = True):
     Arguments:
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
 
-        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
+        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
 
         *vine* : The type of vine copula that needs to be fit, either 'R', 'D', or 'C'
 
@@ -49,7 +42,7 @@ def vinecop(u1, copsi, vine ='R', printing = True):
          
      *p* : Parameters of the bivariate copulae provided as a triangular matrix.
          
-     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
 
     """
     #Reference: Dißmann et al. 2013
@@ -768,32 +761,32 @@ def vinecop(u1, copsi, vine ='R', printing = True):
                 print(nodej, ' ---> ', copulas[int(orde.cop[j])], ': parameters = ', orde.rhos[j])
     
     return a, p, c 
-#%% fitting vine copula with sspecific structur
+#%% fitting vine copula with sspecific structure
 def vinecopstructure(u1, copsi,a):
     """
-    Fit a regular vine copula to data based on a known vine structure
+    Fit a regular vine copula to data based on a known vine structure matrix.
     
     Arguments:
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
         
-        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
+        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
-        *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+        *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer refers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
      
     Returns:  
      *p* : Parameters of the bivariate copulae provided as a triangular matrix.
          
-     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
 
     """
     
-    dimen = a.shape[0]
-    order = pd.DataFrame(columns  = ['node', 'l', 'r', 'tree'])
+    dimen = a.shape[0]  # number of variables (number of columns)
+    order = pd.DataFrame(columns  = ['node', 'l', 'r', 'tree']) # dataframe for vinecopula information
     s = 0
     for i in list(range(dimen-1)):
         for k in list(range(dimen-1-i)):
-            ak = a[:,k]
-            akn = np.array([ak[-1-k], ak[i]]).astype(int)
+            ak = a[:,k] # Edge
+            akn = np.array([ak[-1-k], ak[i]]).astype(int) # Edge
             if i == 0:
                 single_row_values = {
                     'node': list(akn),
@@ -813,9 +806,9 @@ def vinecopstructure(u1, copsi,a):
             s = s +1
 
 
-    for t in list(range(dimen-1)):
-        orderk = order[order.tree == t].reset_index(drop=True)
-        if t == 0:
+    for t in list(range(dimen-1)): # loop through trees
+        orderk = order[order.tree == t].reset_index(drop=True) # select tre
+        if t == 0: # first tree
             orderk['v1'] = orderk.l
             orderk['v2'] = orderk.r
             rhos = []
@@ -844,15 +837,15 @@ def vinecopstructure(u1, copsi,a):
             v1k = []
             v2k = []
             for j in range(len(orderk)):
-                orderk2 =  order[order.tree == t-1].reset_index(drop=True)
+                orderk2 =  order[order.tree == t-1].reset_index(drop=True) # Define possible nodes of edge
                 l = orderk.l[j] + orderk.r[j]
                 subnodes = []
                 for k in range(len(orderk2)):
                     subnodes.append(sum(1 for item in orderk2.node[k] if item in l ))
                 subnodes = np.array(subnodes) == len(l) -1
                 orderk2 = orderk2[subnodes].reset_index(drop=True)
-                v1k.append(orderk2.node[0])
-                v2k.append(orderk2.node[1])
+                v1k.append(orderk2.node[0]) # node 1
+                v2k.append(orderk2.node[1]) # node 2
             orderk['v1'] = v1k
             orderk['v2'] = v2k
             orderk2 =  locals()['order' + str(t)].reset_index(drop=True)
@@ -863,7 +856,7 @@ def vinecopstructure(u1, copsi,a):
             rhos = []
             cops = []
 
-            for k in range(len(orderk)):
+            for k in range(len(orderk)): #fitting copulas 
                 r = orderk.r[k] 
                 nodei = orderk.v1[k] # nodei
                 nodej =  orderk.v2[k] # nodej
@@ -950,12 +943,12 @@ def vinecopstructure(u1, copsi,a):
     for i in range(1,dimen):
         order = pd.concat([order, locals()['order' + str(i)]]).reset_index(drop=True)    
 
-    p = np.empty((dimen,dimen))
+    p = np.empty((dimen,dimen)) # parameter array
     p[:] = np.nan
     p  = p.astype(object)
-    c = np.empty((dimen,dimen))
+    c = np.empty((dimen,dimen)) # copula array
     c[:] = np.nan
-    for i in list(range(dimen-1)):
+    for i in list(range(dimen-1)): #fil the copula and parameter array
         orde = order[order.tree == i]
         for k in list(range(dimen-1-i)):
             ak = a[:,k]
@@ -967,502 +960,6 @@ def vinecopstructure(u1, copsi,a):
                     p[i,k] = orderj.rhos.iloc[0]
                     c[i,k] =  orderj.cop.iloc[0]
     return p,c 
-#%%
-
-def copconditional(u1, vint, copsi):
-    """
-    Fit a regular vine copula which allows for a conditional sample of a variable of interest.
-    
-    Arguments:
-        *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
-        
-        *vint* : the variable of interest, provided as an integere that reffers to the variables column number in u1, where the first column is 0 and the second column is 1, etc.
-        
-        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see...reffer to where this information would be)
-     
-    Returns:  
-     *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
-         
-     *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-         
-     *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
-
-    """
-    v1 = []
-    v2 = []
-    tauabs = []
-    dimen = u1.shape[1]
-    for i in range(dimen-1):
-        for j in range(i+1,dimen):
-            v1.append(int(i))
-            v2.append(int(j))
-            tauabs.append(abs(st.kendalltau(u1[:,i], u1[:,j])[0]))
-        
-       
-    order1 = pd.DataFrame({'v1': v1, 'v2': v2, 'tauabs': tauabs}  ) 
-    order1 = order1.sort_values(by='tauabs', ascending=False).reset_index(drop=True)
-
-    inde = []
-    for i in range(len(order1)):
-        if i == 0:
-            order2 = order1.head(1)
-        else:
-            if (order1.v1[i] in list(order1.v2[:i]) or order1.v1[i] in list(order1.v1[:i]) ) and ( order1.v2[i] in list(order1.v2[:i]) or order1.v2[i] in list(order1.v1[:i])):
-                continue
-            if (vint == order1.v1[i] or vint == order1.v2[i] ) and (vint in list(order1.v2[:i]) or vint in list(order1.v1[:i]) ) :
-                continue
-            else:
-                inde.append(i)
-                order2 = pd.concat([order2, order1.loc[i].to_frame().T], ignore_index=True)
-    if len(order2) < (dimen-1):
-        for i in range(1, len(order1)):
-            if i in inde:
-                continue
-            if (vint == order1.v1[i] or vint == order1.v2[i] ) and (vint in list(order1.v2[:i]) or vint in list(order1.v1[:i]) ) :
-                continue
-            lst = list(order2.v2[order2.v1 == order1.v2[i]]) + list(order2.v1[order2.v2 == order1.v2[i]]) +list(order2.v2[order2.v1 == order1.v1[i]]) + list(order2.v1[order2.v2 == order1.v1[i]]) 
-            if len(lst) == len(set(lst)):
-         
-                order2 = pd.concat([order2, order1.loc[i].to_frame().T], ignore_index=True)
-            if len(order2) == dimen-1:
-                break
-
-            
-    order1 = order2
-    del order2
-    rhos = []
-    node = []
-    v1_1 = []
-    v2_1 =  []
-    cops = []
-    aics = []
-    for i in range(len(order1)):
-        v1i = int(order1.v1[i])
-        v2i = int(order1.v2[i])
-        u3=np.vstack((u1[:,v1i] , u1[:,v2i])).T
-        cop, rho, aic = bestcop(copsi, u3)
-        aics.append(aic)
-        rhos.append(rho)
-        cops.append(cop)
-        node.append([v1i , v2i])
-        v1_1.append(u1[:,v1i])
-        v2_1.append(u1[:,v2i])
-    v1_1 = np.array(v1_1).T
-    v2_1 = np.array(v2_1).T
-        
-    order1['rhos'] = rhos
-    order1['node'] = node
-    order1['tree'] = 0
-    order1['cop'] = cops
-    order1['AIC'] = aics
-
-    v1 = []
-    v2 = []
-    ktau = []
-    rhos = []
-    cops = []
-    node = []
-    aics = []
-    v1_k = []
-    v2_k = []
-    l = []
-    r = []
-    for i in range(len(order1)):
-        v1i = int(order1.v1[i])
-        v2i = int(order1.v2[i])
-        copi = int(order1.cop[i])
-        pari =  order1.rhos[i]
-        if i == (len(order1) - 1):
-                 continue
-        for j in np.where(np.array([item == v1i for item in list(order1.v1[i+1:])]) | np.array([item == v1i for item in list(order1.v2[i+1:])])| np.array([item == v2i for item in list(order1.v1[i+1:])])| np.array([item == v2i for item in list(order1.v2[i+1:])]))[0] +i + 1:
-            v1j = int(order1.v1[j])
-            v2j = int(order1.v2[j])
-            copj = int(order1.cop[j])
-            parj =  order1.rhos[j]
-            v1.append(order1.node[i])
-            v2.append(order1.node[j])
-            lst = order1.node[i] + order1.node[j]
-            s= max(set(lst), key=lst.count)
-            ui1 = v1_1[:,i]
-            ui2 = v2_1[:,i]
-            uj1 = v1_1[:,j]
-            uj2 = v2_1[:,j]
-            if v1i == s:
-                uni = 1
-                vi1 = v2i
-            else:
-                uni = 2
-                vi1 = v1i
-            if v1j == s:
-                unj = 1
-                vj1 = v2j
-            else:
-                unj = 2
-                vj1 = v1j
-                
-            v1igs = hfunc(copi, ui1, ui2, pari, un = uni) 
-            v2jgs = hfunc(copj, uj1, uj2, parj, un = unj)
-            ktau.append(abs(st.kendalltau(v1igs ,  v2jgs  )[0]))
-           # rhos.append(GaussianCopulafit(np.vstack((v1igs ,  v2jgs )).T))
-            v1_k.append(v1igs)
-            v2_k.append(v2jgs)
-            node.append([vi1, vj1, 'g', s])
-            l.append([vi1, vj1])
-            r.append([s])
-            
-      
-    k = 2
-
-    orderk =  pd.DataFrame({'v1': v1, 'v2': v2, 'tauabs': ktau, 'node': node, 'l': l, 'r': r}  )
-
-    if len(orderk) > dimen-k:
-        orderk = orderk.sort_values(by='tauabs', ascending=False)
-        orderk = orderk.reset_index(drop=True)
-        indexes = list(orderk.index)
-        inde = []
-        inde2 = []
-        for i in range(len(orderk)):
-            if i == 0:
-                order = orderk.head(1)
-                inde.append(indexes[i])
-                l = orderk.l[i]
-                
-            else:
-                if ((vint in l) and (vint in orderk.l[i])) or ((orderk.v1[i] in list(orderk.v2[:i]) or orderk.v1[i] in list(orderk.v1[:i]) ) and ( orderk.v2[i] in list(orderk.v2[:i]) or orderk.v2[i] in list(orderk.v1[:i]))):
-                    continue
-                else:
-                    inde.append(indexes[i])
-                    inde2.append(i)
-                    order = pd.concat([order, orderk.loc[i].to_frame().T], ignore_index=True)
-                    l = l + orderk.l[i]
-        Tf = order.apply(lambda row: ((order['v1'].apply(lambda x: set(x) == set(row['v1']))).sum() > 1) or
-                                                    ((order['v2'].apply(lambda x: set(x) == set(row['v2']))).sum() > 1), axis=1)
-        if sum(Tf) < len(Tf):
-            for q in np.where(Tf == False)[0]:
-                for i in range(1, len(orderk)):
-                    if i in inde:
-                        continue
-                    if ((vint in l) and (vint in orderk.l[i])):
-                        continue
-                    if (orderk.v2[i] == order.v1[q]) or (orderk.v1[i] == order.v1[q]) or (orderk.v1[i] == order.v2[q]) or (orderk.v1[i] == order.v2[q]):
-
-                        order = pd.concat([order, orderk.loc[i].to_frame().T], ignore_index=True)
-                        inde.append(indexes[i])
-                        break
-                         
-        if len(order) < (dimen-k):
-            for i in range(1, len(orderk)):
-                if i in inde:
-                    continue
-                if ((vint in l) and (vint in orderk.l[i])):
-                    continue
-                lst = list(order.v2.astype(str)[order.v1.astype(str) == str(orderk.v1[i])]) + list(order.v1.astype(str)[order.v2.astype(str) == str(orderk.v1[i])])+ list(order.v2.astype(str)[order.v1.astype(str) == str(orderk.v2[i])]) + list(order.v1.astype(str)[order.v2.astype(str) == str(orderk.v2[i])])
-                if len(lst) == len(set(lst)):
-                    order = pd.concat([order, orderk.loc[i].to_frame().T], ignore_index=True)
-                    inde.append(indexes[i])
-                if len(order) == dimen-k:
-                    break
-        orderk = order
-        orderk = orderk.sort_values(by='tauabs', ascending=False)
-        
-        v1_k = np.array([v1_k[ind] for ind in inde]).T
-        v2_k = np.array([v2_k[ind] for ind in inde]).T
-        orderk = orderk.reset_index(drop=True)
-        orderk['tree'] = k - 1
-        v1_2 = v1_k.copy()
-        v2_2 = v2_k.copy()
-        order2 = orderk.copy()
-
-
-
-
-    else:
-        orderk = orderk.sort_values(by='tauabs', ascending=False)
-       
-        v1_k = np.array([v1_k[ind] for ind in orderk.index]).T
-        v2_k = np.array([v2_k[ind] for ind in orderk.index]).T
-        orderk = orderk.reset_index(drop=True)
-        orderk['tree'] = k - 1
-        v1_2 = v1_k.copy()
-        v2_2 = v2_k.copy()
-        order2 = orderk.copy()
-        
-        
-    for i in range(len(order2)):
-        u3=np.vstack((v1_2[:,i] , v2_2[:,i])).T
-        cop, rho, aic = bestcop(copsi, u3)
-        aics.append(aic)
-        rhos.append(rho)
-        cops.append(cop)
-        
-    order2['rhos'] = rhos
-    order2['cop'] = cops
-    order2['AIC'] = aics
-    
-    if dimen > 3:
-        for k in range(3,dimen):
-            order = locals()['order' + str(k-1)].copy()
-            v1s =  locals()['v1_' + str(k-1)].copy()
-            v2s =  locals()['v2_' + str(k-1)].copy()
-            v1_k = []
-            v2_k = []
-            v1 = []
-            v2 = []
-            cops = []
-            ktau = []
-            rhos = []
-            node = []
-            lk = []
-            rk = []
-            aics = []
-            for i in range(len(order)):
-                v1i = order.v1[i].copy()
-                v2i = order.v2[i].copy()
-                copi = int(order1.cop[i])
-                pari =  order1.rhos[i]
-                if i == (len(order) - 1):
-                         continue
-                for j in np.where(np.array([item == v1i for item in list(order.v1[i+1:])]) | np.array([item == v1i for item in list(order.v2[i+1:])])| np.array([item == v2i for item in list(order.v1[i+1:])])| np.array([item == v2i for item in list(order.v2[i+1:])]))[0] +i + 1:
-                    v1i = order.v1[i].copy()
-                    v2i = order.v2[i].copy()
-                    copj = int(order1.cop[j])
-                    parj =  order1.rhos[j]
-                    nodei = order.node[i]
-                    nodej =  order.node[j]
-                    v1j =  order.v1[j].copy()
-                    v2j =  order.v2[j].copy()
-                    v1.append(nodei)
-                    v2.append(nodej)
-                    n = 2
-
-                    ri = nodei[n+1:]
-                    rj = nodej[n+1:]
-                
-                    if 'g' in v1j:
-                        v1j.remove('g')
-                        v2j.remove('g')
-                        v1i.remove('g')
-                        v2i.remove('g')
-                        
-                        
-                        
-                    
-                    if rj == ri:
-                        if len(v1j) == 2:
-                            lst = nodei[:n]  +  nodej[:n] 
-                            r3 = [max(set(lst), key=lst.count)]
-                            li = [value for value in nodei[:n] if value not in r3]
-                            lj = [value for value in nodej[:n] if value not in r3]
-                            r = list(np.unique(ri + r3))
-                        else:
-                            lst = v1i[:n] +  v2i[:n] + v1j[:n] +  v2j[:n]
-                            for s in ri:
-                                lst = [x for x in lst if x != s]
-                            r3 = [max(set(lst), key=lst.count)]
-                            li = [value for value in nodei[:n] if value not in r3]
-                            lj = [value for value in nodej[:n] if value not in r3]
-                            r = list(np.unique(ri + r3))
-                        l = list(np.unique(li + lj))
-                        #node.append(li + lj + ['g'] + ri + r3)
-                    else:
-                        r = list(np.unique(ri + rj))
-                        li = [value for value in nodei[:n] if value not in rj]
-                        lj = [value for value in nodej[:n] if value not in ri]
-                        if li == lj:
-                            lst = v1i[:n] +  v2i[:n] + v1j[:n] +  v2j[:n] 
-                            lst = [x for x in lst if x != li[0]]
-                            l3 = [min(set(lst), key=lst.count)]
-                            l  =  list(np.unique(li + l3))
-                        else:
-                            l = list(np.unique(li + lj))
-                    ui1 = v1s[:,i]
-                    ui2 = v2s[:,i]
-                    uj1 = v1s[:,j]
-                    uj2 = v2s[:,j]
-                    if set(r).issubset(set(v1i)):
-                        uni = 1
-                    elif set(r).issubset(set(v2i)):
-                        uni = 2
-                    elif set(rj).issubset(set(v2i[1:])):
-                        uni= 2
-                    elif set(rj).issubset(set(v1i[1:])):
-                        uni = 1
-                    if set(r).issubset(set(v1j)):
-                        unj = 1
-                    elif set(r).issubset(set(v2j)):
-                        unj = 2
-                    elif set(ri).issubset(set(v2j[1:])):
-                        unj = 2
-                    elif set(ri).issubset(set(v1j[1:])):
-                        unj = 1
-                        
-                    v1igs = hfunc(copi, ui1, ui2, pari, un = uni) 
-                    v2jgs = hfunc(copj, uj1, uj2, parj, un = unj)
-                    ktau.append(abs(st.kendalltau(v1igs ,  v2jgs  )[0]))
-                    #rhos.append(GaussianCopulafit(np.vstack((v1igs ,  v2jgs )).T))
-                    v1_k.append(v1igs)
-                    v2_k.append(v2jgs)
-                       # node.append(li + lj + ['g'] + ri + rj)
-                       
-                   
-                    del uj1,ui1,ui2,uj2
-                    
-                    node.append(l + ['g'] + r)
-                    lk.append(l)
-                    rk.append(r)
-            orderk =  pd.DataFrame({'v1': v1, 'v2': v2, 'tauabs': ktau, 'node': node, 'l': lk, 'r': rk}  )
-           
-            for w in range(len(orderk)):
-                for q in orderk.l[w]: 
-                    if q in orderk.r[w]:
-                        orderk = orderk.drop(labels=w, axis=0)
-                        break
-            if len(orderk) > dimen-k:
-                orderk = orderk.sort_values(by='tauabs', ascending=False)
-                orderk = orderk.reset_index(drop=True)
-                indexes = list(orderk.index)
-                inde = []
-                inde2 = []
-                for i in range(len(orderk)):
-                    if i == 0:
-                        order = orderk.head(1)
-                        inde.append(indexes[i])
-                        l = orderk.l[i]
-                        
-                    else:
-                        if ((vint in l) and (vint in orderk.l[i])) or ((orderk.v1[i] in list(orderk.v2[:i]) or orderk.v1[i] in list(orderk.v1[:i]) ) and ( orderk.v2[i] in list(orderk.v2[:i]) or orderk.v2[i] in list(orderk.v1[:i]))):
-                            continue
-                        else:
-                            inde.append(indexes[i])
-                            inde2.append(i)
-                            order = pd.concat([order, orderk.loc[i].to_frame().T], ignore_index=True)
-                            l = l + orderk.l[i]
-                if len(order) < (dimen-k):
-                    for i in range(1, len(orderk)):
-                        if i in inde:
-                            continue
-                        if ((vint in l) and (vint in orderk.l[i])):
-                            continue
-                        lst = list(order.v2.astype(str)[order.v1.astype(str) == str(orderk.v1[i])]) + list(order.v1.astype(str)[order.v2.astype(str) == str(orderk.v1[i])])+ list(order.v2.astype(str)[order.v1.astype(str) == str(orderk.v2[i])]) + list(order.v1.astype(str)[order.v2.astype(str) == str(orderk.v2[i])])
-                        if len(lst) == len(set(lst)):
-                            order = pd.concat([order, orderk.loc[i].to_frame().T], ignore_index=True)
-                            inde.append(indexes[i])
-                        if len(order) == dimen-k:
-                            break
-                orderk = order
-                orderk = orderk.sort_values(by='tauabs', ascending=False)
-                
-                v1_k = np.array([v1_k[ind] for ind in inde]).T
-                v2_k = np.array([v2_k[ind] for ind in inde]).T
-                orderk = orderk.reset_index(drop=True)
-                orderk['tree'] = k - 1
-        
-                for j in range(len(orderk)):
-                    u3=np.vstack((v1_k[:,j] , v2_k[:,j])).T
-                    cop, rho, aic = bestcop(copsi, u3)
-                    aics.append(aic)
-                    rhos.append(rho)
-                    cops.append(cop)
-                
-                orderk['rhos'] = rhos
-                orderk['cop'] = cops
-                orderk['AIC'] = aics
-                locals()['v1_' + str(k)] = v1_k
-                locals()['v2_' + str(k)] = v2_k
-                locals()['order' + str(k)] = orderk
-                
-            else:
-                orderk = orderk.sort_values(by='tauabs', ascending=False)
-               
-                v1_k = np.array([v1_k[ind] for ind in orderk.index]).T
-                v2_k = np.array([v2_k[ind] for ind in orderk.index]).T
-                orderk = orderk.reset_index(drop=True)
-                orderk['tree'] = k - 1
-                    
-                for j in range(len(orderk)):
-                    u3=np.vstack((v1_k[:,j] , v2_k[:,j])).T
-                    cop, rho, aic = bestcop(copsi, u3)
-                    rhos.append(rho)
-                    aics.append(aic)
-                    cops.append(cop)
-                    
-                orderk['rhos'] = rhos
-                orderk['cop'] = cops
-                orderk['AIC'] = aics
-                locals()['v1_' + str(k)] = v1_k
-                locals()['v2_' + str(k)] = v2_k
-                locals()['order' + str(k)] = orderk
-        
-        
-        
-            
-        
-
-        
-        
-        
-
-        order = pd.DataFrame(columns  = order1.columns)
-        for i in range(1,dimen):
-            order = pd.concat([order, locals()['order' + str(i)]]).reset_index(drop=True)
-
-            
-
-        a = np.empty((dimen,dimen))
-        c = np.empty((dimen,dimen))
-        a[:] = np.nan
-        c[:] = np.nan
-       
-
-
-        order['used'] = 0
-        for i in list(range(dimen-1))[::-1]:
-            k1 = sorted(np.array(order[(order.tree == i) & (order['used'] == 0)].node.iloc[0][:2]).astype(int))[::-1]
-            order.loc[(order['tree'] == i) & (order['used'] == 0), 'used'] = 1
-            t1 = i - 1
-            ii = dimen-2-i
-            a[i:dimen-ii,ii] = k1
-            s = k1[-1]
-            for j in list(range(0,i))[::-1]:
-                orde = order[(order.tree == j) & (order['used'] == 0)]
-                for k in range(len(orde)):
-                    arr = np.array(orde.node.iloc[k][:2]).astype(int)
-                    if np.isin(s,arr) == True:
-                        inde = orde.iloc[k].name
-                        a[j, ii] = arr[arr!=s][0]
-                        order['used'][inde] = 1
-
-        a[0,dimen-1] = a[0,dimen-2] 
-        orderk = pd.DataFrame(columns  = order.columns)
-        p = np.empty((dimen,dimen))
-        p[:] = np.nan
-        p  = p.astype(object)
-        for i in list(range(dimen-1)):
-            orde = order[order.tree == i]
-            for k in list(range(dimen-1-i)):
-                ak = a[:,k]
-                akn = np.array([ak[-1-k], ak[i]]).astype(int)
-                for j in range(len(orde)):
-                    arr = np.array(orde.node.iloc[j][:2]).astype(int)
-                    if sum(np.isin(akn,arr)) == 2:
-                        orderj = order.loc[[orde.index[j]]]
-                        p[i,k] = orderj.rhos.iloc[0]
-                        c[i,k] =  orderj.cop.iloc[0]
-                        if i == 0:
-                            orderj.node.iloc[0] = list(akn )
-                        else:
-                            orderj.node.iloc[0] = list(akn)  + ['|'] + list((ak.astype(int)[:i])[::-1])
-                        orderk = pd.concat([orderk, orderj]).reset_index(drop=True)
-                        
-                        
-
-        for i in list(range(dimen-1)):
-            orde = orderk[orderk.tree == i].reset_index(drop=True)
-            print('** Tree: ', i)
-            for j in range(len(orde)):
-                print(orde.node[j], copulas[int(orde.cop[j])], ' ---> parameters = ', orde.rhos[j])
-        return a, p, c 
-
 
 #%% Sampling vine copula
 def samplecop(a, p,  c, s):
@@ -1474,7 +971,7 @@ def samplecop(a, p,  c, s):
         
         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
         
-        *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+        *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *s* : number of samples to generate, provided as a positive scalar integer.
         
@@ -1484,26 +981,22 @@ def samplecop(a, p,  c, s):
      *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
          
     """
-    # Reference: Dißmann et al. 2012 
-    Ms =  np.flipud(a)
-    P =   np.flipud(p)
-    C =   np.flipud(c)
-    replace = {}
+    # Reference: Dißmann et al. 2013 
+    Ms =  np.flipud(a) # flip structure matrix
+    P =   np.flipud(p) # flip parameter matrix
+    C =   np.flipud(c) # flip copula matrix
+    replace = {} # dictionary for relabeling martix
     for i in range(int(max(np.unique(Ms))+1)):
         val = max(np.unique(Ms))- i
        # Ms[k,k]
-        replace.update({Ms[i,i]: val})
+        replace.update({Ms[i,i]: val}) # relabel
         
     Ms = np.nan_to_num(Ms, nan=int(max(np.unique(Ms))+1))
-
-    # Create a vectorized function for replacement
-    replace_func = np.vectorize(lambda x: replace.get(x, x))
-
-    # Apply the replacement to the array
-    M = replace_func(Ms)
+    replace_func = np.vectorize(lambda x: replace.get(x, x))  # Create a vectorized function for replacement
+    M = replace_func(Ms) # relabel 
     M[M==np.max(Ms)]=np.nan
     Mm = M.copy()
-    #i = row,k = column
+    # max matrix
     for i in range(M.shape[0]):
         for k in range(M.shape[0]):
             if k == i:
@@ -1511,40 +1004,39 @@ def samplecop(a, p,  c, s):
             if i == 0:
                 continue
             Mm[i,k] = max(Mm[i:,k])
-            
-            
-            
-
-    Vdir = np.empty((s, M.shape[0],M.shape[0]))
+       
+    #Vdirect
+    Vdir = np.empty((s, M.shape[0],M.shape[0])) 
     Vdir[:] = np.nan
+    #Vindirect
     Vindir =  np.empty((s, M.shape[0],M.shape[0]))
     Vindir[:] = np.nan
+    # Z2
     Z2 = np.empty((s, M.shape[0],M.shape[0]))
     Z2[:] = np.nan
+    # Z1
     Z1 = np.empty((s, M.shape[0],M.shape[0]))
     Z2[:] = np.nan
-    U = np.random.uniform(0,1,(s, M.shape[0]))
+    U = np.random.uniform(0,1,(s, M.shape[0])) #random uniform 
     Vdir[:,-1,:] = U.copy()
     X =np.flip(U.copy(), 1)
     n = M.shape[0]-1
+    # sampling algorithm 
     for k in range(n)[::-1]:
         for i in range(k+1, n+1):
             if M[i,k] == Mm[i,k]:
                 Z2[:,i,k] = Vdir[:,i, int(n- Mm[i,k])]
             else:
                 Z2[:,i,k] = Vindir[:,i, int(n- Mm[i,k])]
-            #Vdir[:,n,k] =  inverse_condcdfgaus(Z2[:,i,k], Vdir[:,n,k], P[i,k])
             Vdir[:,n,k] =   hfuncinverse( int(C[i,k]), Z2[:,i,k],Vdir[:,n,k],  P[i,k], un = 2)
         X[:,int(n-k)] = Vdir[:,n, k]
         for i in range(k+1, n+1)[::-1]:
             Z1[:,i,k] = Vdir[:,i,k]
-            #Vdir[:,int(i-1),k] =  condcdfgaus(Z1[:,i,k],Z2[:,i,k],P[i,k])
-            #Vindir[:,int(i-1),k] =  condcdfgaus(Z2[:,i,k],Z1[:,i,k],P[i,k])
             Vdir[:,int(i-1),k] =  hfunc(int(C[i,k]), Z1[:,i,k],Z2[:,i,k], P[i,k], un = 2)
             Vindir[:,int(i-1),k] =  hfunc(int(C[i,k]), Z1[:,i,k],Z2[:,i,k], P[i,k], un = 1)
             
             
-            
+    # Put X in the original order of the data        
     replacedf = pd.DataFrame(list(replace.items()), columns=['Original', 'Replacement'])
     replacedf = replacedf.sort_values(by='Original')
     X2 = np.array([])
@@ -1557,91 +1049,94 @@ def samplecop(a, p,  c, s):
 
 #%% Sampling conditonal vine copula
 def vincopconditionalsample(a, p,c, s, Xc):
-   """
-   Generate conditional samples from an R-vine based on a provided sampling order
-   
-   Arguments:
-        *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
-       
-        *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-       
-        *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
-       
-        *s* : number of samples to generate, provided as a positive scalar integer.
-       
-        *XC*: the values of the variables on which the conditional sample has to generated, provided as a 1d array that contains the the values ordered in terms of the sampling order. 
+    """
+    Generate conditional samples from an R-vine based on a provided sampling order
     
-    Returns:  
-     *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
+    Arguments:
+         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer reffers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
         
-   """ 
-   Ms =  np.flipud(a)
-   P =   np.flipud(p)
-   C =   np.flipud(c)
-   replace = {}
-   for i in range(int(max(np.unique(Ms))+1)):
-       val = max(np.unique(Ms))- i
-      # Ms[k,k]
-       replace.update({Ms[i,i]: val})
-       
-   Ms = np.nan_to_num(Ms, nan=int(max(np.unique(Ms))+1))
-
-   # Create a vectorized function for replacement
-   replace_func = np.vectorize(lambda x: replace.get(x, x))
-
-   # Apply the replacement to the array
-   M = replace_func(Ms)
-   M[M==np.max(Ms)]=np.nan
-   Mm = M.copy()
-   #i = row,k = column
-   for i in range(M.shape[0]):
-       for k in range(M.shape[0]):
-           if k == i:
-               continue
-           if i == 0:
-               continue
-           Mm[i,k] = max(Mm[i:,k])
-           
-           
-
-   Vdir = np.empty((s, M.shape[0],M.shape[0]))
-   Vdir[:] = np.nan
-   Vindir =  np.empty((s, M.shape[0],M.shape[0]))
-   Vindir[:] = np.nan
-   Z2 = np.empty((s, M.shape[0],M.shape[0]))
-   Z2[:] = np.nan
-   Z1 = np.empty((s, M.shape[0],M.shape[0]))
-   Z2[:] = np.nan
-
-   U =np.hstack((np.random.uniform(0,1, (s, M.shape[0]-len(Xc))), np.flip(np.tile(Xc, (s, 1)).copy(), 1)))
-   Vdir[:,-1,:] = U.copy()
-   X =np.flip(U.copy(), 1)
-   n = M.shape[0]-1
-
-
-   for k in range(n)[::-1]:    
-       for i in range(k+1, n+1):
-           if M[i,k] == Mm[i,k]:
-               Z2[:,i,k] = Vdir[:,i, int(n- Mm[i,k])]
-           else:
-               Z2[:,i,k] = Vindir[:,i, int(n- Mm[i,k])]
-           if k <= n-len(Xc):
-               Vdir[:,n,k] =   hfuncinverse( int(C[i,k]), Z2[:,i,k],Vdir[:,n,k],  P[i,k], un = 2)
-       X[:,int(n-k)] = Vdir[:,n, k]
-       for i in range(k + 1, n + 1)[::-1]:
-          Z1[:,i,k] = Vdir[:,i,k]
-          Vdir[:,int(i-1),k] =  hfunc(int(C[i,k]), Z1[:,i,k],Z2[:,i,k], P[i,k], un = 2)
-          Vindir[:,int(i-1),k] =  hfunc(int(C[i,k]), Z1[:,i,k],Z2[:,i,k], P[i,k], un = 1)
+         *p* : Parameters of the bivariate copulae provided as a triangular matrix.
+        
+         *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers reffering to the copulae with the best fit. eg. a 1 reffers to the gaussian copula (see...reffer to where this information would be)
+        
+         *s* : number of samples to generate, provided as a positive scalar integer.
+        
+         *XC*: the values of the variables on which the conditional sample has to generated, provided as a 1d array that contains the the values ordered in terms of the sampling order. 
+     
+     Returns:  
+      *X2* :  the randomly sampled data data, provided as a numpy array where each column contains samples of a seperate variable (eg. u1,u2,...,un).
+         
+    """ 
           
-   replacedf = pd.DataFrame(list(replace.items()), columns=['Original', 'Replacement'])
-   replacedf = replacedf.sort_values(by='Original')
-   X2 = np.array([])
-   for i in replacedf.Replacement:
-       if len(X2) == 0:
-           X2 =X[:,int(i)].reshape(len(X),1)
-       else:
-           X2 = np.hstack((X2, X[:,int(i)].reshape(len(X),1)))   
-   return X2
+     # Reference: Dißmann et al. 2013 
+    Ms =  np.flipud(a) # flip structure matrix
+    P =   np.flipud(p) # flip parameter matrix
+    C =   np.flipud(c) # flip copula matrix
+    replace = {} # dictionary for relabeling martix
+    for i in range(int(max(np.unique(Ms))+1)):
+        val = max(np.unique(Ms))- i
+       # Ms[k,k]
+        replace.update({Ms[i,i]: val}) # relabel
+        
+    Ms = np.nan_to_num(Ms, nan=int(max(np.unique(Ms))+1))
+    replace_func = np.vectorize(lambda x: replace.get(x, x))  # Create a vectorized function for replacement
+    M = replace_func(Ms) # relabel 
+    M[M==np.max(Ms)]=np.nan
+    Mm = M.copy()
+    # max matrix
+    for i in range(M.shape[0]):
+        for k in range(M.shape[0]):
+            if k == i:
+                continue
+            if i == 0:
+                continue
+            Mm[i,k] = max(Mm[i:,k])
+               
+   # Vdirect
+    Vdir = np.empty((s, M.shape[0],M.shape[0]))
+    Vdir[:] = np.nan
+    # Vindirect
+    Vindir =  np.empty((s, M.shape[0],M.shape[0]))
+    Vindir[:] = np.nan
+    # Z2
+    Z2 = np.empty((s, M.shape[0],M.shape[0]))
+    Z2[:] = np.nan
+    #Z1
+    Z1 = np.empty((s, M.shape[0],M.shape[0]))
+    Z2[:] = np.nan
+    # combine random uniform data with conditional input
+    U =np.hstack((np.random.uniform(0,1, (s, M.shape[0]-len(Xc))), np.flip(np.tile(Xc, (s, 1)).copy(), 1)))
+    Vdir[:,-1,:] = U.copy()
+    X =np.flip(U.copy(), 1)
+    n = M.shape[0]-1
+
+    # sampling algorithm  
+    for k in range(n)[::-1]:    
+        for i in range(k+1, n+1):
+            if M[i,k] == Mm[i,k]:
+                Z2[:,i,k] = Vdir[:,i, int(n- Mm[i,k])]
+            else:
+                Z2[:,i,k] = Vindir[:,i, int(n- Mm[i,k])]
+            if k <= n-len(Xc):
+                Vdir[:,n,k] =   hfuncinverse( int(C[i,k]), Z2[:,i,k],Vdir[:,n,k],  P[i,k], un = 2)
+        X[:,int(n-k)] = Vdir[:,n, k]
+        for i in range(k + 1, n + 1)[::-1]:
+           Z1[:,i,k] = Vdir[:,i,k]
+           Vdir[:,int(i-1),k] =  hfunc(int(C[i,k]), Z1[:,i,k],Z2[:,i,k], P[i,k], un = 2)
+           Vindir[:,int(i-1),k] =  hfunc(int(C[i,k]), Z1[:,i,k],Z2[:,i,k], P[i,k], un = 1)
+   
+     # Put X in the original order of the data          
+    replacedf = pd.DataFrame(list(replace.items()), columns=['Original', 'Replacement'])
+    replacedf = replacedf.sort_values(by='Original')
+    X2 = np.array([])
+    for i in replacedf.Replacement:
+        if len(X2) == 0:
+            X2 =X[:,int(i)].reshape(len(X),1)
+        else:
+            X2 = np.hstack((X2, X[:,int(i)].reshape(len(X),1)))   
+    return X2
+    
+    
 #%%sampling orders
 
 def samplingorder(a):
@@ -1663,12 +1158,12 @@ def samplingorder(a):
          
     """
     
-    dimen = a.shape[0]
-    order = pd.DataFrame(columns  = ['node', 'l', 'r', 'tree'])
+    dimen = a.shape[0] # dimension of data.
+    order = pd.DataFrame(columns  = ['node', 'l', 'r', 'tree']) # dataframe for vine copula structure.
     s = 0
     for i in list(range(dimen-1)):
         for k in list(range(dimen-1-i)):
-            ak = a[:,k]
+            ak = a[:,k] # edges
             akn = np.array([ak[-1-k], ak[i]]).astype(int)
             if i == 0:
                 single_row_values = {
@@ -1687,7 +1182,7 @@ def samplingorder(a):
         
             order.loc[s] = single_row_values
             s = s +1
-    combinations = list(product([True, False], repeat=dimen-1))
+    combinations = list(product([True, False], repeat=dimen-1)) # all diffferent sampling routes.
     sortingorder = []
     for q in combinations:
         a = np.empty((dimen,dimen))
@@ -1708,7 +1203,7 @@ def samplingorder(a):
                         a[j, ii] = arr[arr!=s][0]
                         order['used'][inde] = 1
         a[0,dimen-1] = a[0,dimen-2] 
-        sortingorder.append(list(np.diag(a[::-1])[::-1])) 
+        sortingorder.append(list(np.diag(a[::-1])[::-1])) # add unique sampling orders
     return sortingorder
             
 #%%matrices of specific sampling order
@@ -1735,8 +1230,8 @@ def samplingmatrix(a,c,p,sorder):
          
     """
     
-    dimen = a.shape[0]
-    order = pd.DataFrame(columns  = ['node', 'par', 'cop', 'l', 'r', 'tree'])
+    dimen = a.shape[0] # dimension of data
+    order = pd.DataFrame(columns  = ['node', 'par', 'cop', 'l', 'r', 'tree']) # dataframe for vine copula structure
     s = 0
     for i in list(range(dimen-1)):
         for k in list(range(dimen-1-i)):
@@ -1763,12 +1258,12 @@ def samplingmatrix(a,c,p,sorder):
         
             order.loc[s] = single_row_values
             s = s +1
-    ai = np.empty((dimen,dimen))
+    ai = np.empty((dimen,dimen)) # array for vine copula structure
     ai[:] = np.nan
     order['used'] = 0
-    ci = np.empty((dimen,dimen))
+    ci = np.empty((dimen,dimen)) # array for vine copula copulas
     ci[:] = np.nan
-    pi = np.empty((dimen,dimen))
+    pi = np.empty((dimen,dimen)) # array for parameters
     pi[:] = np.nan
     pi = pi.astype(object)
     for i in list(range(dimen-1))[::-1]:
@@ -3008,8 +2503,8 @@ def plotvine(a, plottitle = None, variables = None, savepath = None):
          
 
     """
-    dimen = a.shape[0]
-    order = pd.DataFrame(columns  = ['node', 'l', 'r', 'tree'])
+    dimen = a.shape[0] # dimension of copula
+    order = pd.DataFrame(columns  = ['node', 'l', 'r', 'tree']) # dataframe with vine copula structure.
     s = 0
     for i in list(range(dimen-1)):
         for k in list(range(dimen-1-i)):
@@ -3089,46 +2584,32 @@ def plotvine(a, plottitle = None, variables = None, savepath = None):
             edges = [(','.join(map(str, orderk.v1[i])).replace(',|,', '|'), ','.join(map(str, orderk.v2[i])).replace(',|,', '|')) for i in range(len(orderk))]
             edge_labels = {edge: ','.join(map(str, orderk.node[i])).replace(',|,', '|') for i, edge in enumerate(edges)}
 
-        #edge_lengths = [((int(e1.split(',')[0]) - int(e2.split(',')[0]))**2 + (int(e1.split(',')[1]) - int(e2.split(',')[1]))**2)**0.5 for e1, e2 in edges]
-       # node_size = [length * 100 for length in edge_lengths]
-        # Create an empty graph
-        G = nx.Graph()
+        G = nx.Graph() # Create graph.
+        G.add_edges_from(edges)  # Add edges to the graph
+        pos = nx.spring_layout(G) # Position the nodes using the spring layout
 
-        # Add edges to the graph
-        G.add_edges_from(edges)
-
-        # Position the nodes using the spring layout
-        pos = nx.spring_layout(G)
-        
         d = nx.degree(G)
         try:
             sizes = len(edges[0][0]) * 400
         except:
             sizes = len(edges[0]) * 400
-        # Draw nodes with color
-       # nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size= sizes, node_shape='s',node_color='skyblue', ax=ax)
-      
-        # Draw labels for nodes
-        nx.draw_networkx_labels(G, pos, ax=ax,bbox= dict(facecolor = 'skyblue'), font_size = 13)
 
-        # Draw black edges between nodes
-        nx.draw_networkx_edges(G, pos, edge_color='black', ax=ax,)
+        nx.draw_networkx_labels(G, pos, ax=ax,bbox= dict(facecolor = 'skyblue'), font_size = 13) # Draw labels.
 
-        # Draw text labels above each edge
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='black', ax=ax, font_size = 12)
+        nx.draw_networkx_edges(G, pos, edge_color='black', ax=ax,)  # Draw black edges between nodes
 
-        # Remove the box around the plot
-        ax.axis('off')
-        # Set title for the subplot
-        ax.set_title(f'Tree {t}')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='black', ax=ax, font_size = 12)  # Draw text labels above each edge
 
-    #fig.legend(leg_labels.keys())  
+        ax.axis('off')  # Remove the box around the plot
+
+        ax.set_title(f'Tree {t}') # Set title for the subplot
+
+    # title 
     if plottitle != None:
         fig.suptitle(plottitle,fontsize=16,  y=0.93)
     if variables != None:
         plt.text(0.9, 0.5, '\n'.join([f"{key}  :  {value}" for key, value in leg_labels.items()]), transform=plt.gcf().transFigure, fontsize=15, verticalalignment='center')
-    #plt.figlegend(loc='upper center', labels=[f'{key} ... {value}' for key, value in leg_labels.items()], ncol=6)
-    #plt.tight_layout()
+    # save
     if savepath != None:
         plt.savefig(savepath, dpi=300, bbox_inches = 'tight') 
-    plt.show()
+    plt.show() # Show plot.
