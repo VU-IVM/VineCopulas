@@ -23,7 +23,7 @@ import sys
 # %% best fit discrete distribution
 
 
-def best_fit_distributiondiscrete(data, bound=False):
+def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
     """
     Fits the best discrete distribution to data.
 
@@ -31,6 +31,8 @@ def best_fit_distributiondiscrete(data, bound=False):
         *data* : The data which has to be fit as a 1-d numpy array.
 
         *bounds* : whether the data is bounded
+
+        *criterion* : Either BIC, AIC or ML is used to choose the best distribution
 
     Returns:
      *bestdist* : the best distribution and its parameters.
@@ -130,10 +132,15 @@ def best_fit_distributiondiscrete(data, bound=False):
 
                 log_likelihood = distribution(*params).logpmf(data).sum()
 
-                BIC = -2 * log_likelihood + np.log(n) * k
+                if criterion == "BIC":
+                    criterion_value = -2 * log_likelihood + np.log(n) * k
+                elif criterion == "AIC":
+                    criterion_value = -2 * k - 2 * log_likelihood
+                elif criterion == "ML":
+                    criterion_value = log_likelihood
 
                 # identify if this distribution is better
-                best_distributions.append((distribution, params, BIC))
+                best_distributions.append((distribution, params, criterion_value))
 
         except Exception:
             pass
@@ -143,8 +150,6 @@ def best_fit_distributiondiscrete(data, bound=False):
 
 
 # %% best fit distribution
-
-
 def best_fit_distribution(data, criterion="BIC"):
     """
     Fits the best continious distribution to data.
@@ -152,6 +157,7 @@ def best_fit_distribution(data, criterion="BIC"):
     Arguments:
         *data* : The data which has to be fit as a 1-d numpy array.
 
+        *criterion* : Either BIC, AIC or ML is used to choose the best distribution
 
     Returns:
      *bestdist* : the best distribution and its parameters.
@@ -205,10 +211,15 @@ def best_fit_distribution(data, criterion="BIC"):
                     distribution(loc=loc, scale=scale, *arg).logpdf(data).sum()
                 )
 
-                BIC = -2 * log_likelihood + np.log(n) * k
+                if criterion == "BIC":
+                    criterion_value = -2 * log_likelihood + np.log(n) * k
+                elif criterion == "AIC":
+                    criterion_value = -2 * k - 2 * log_likelihood
+                elif criterion == "ML":
+                    criterion_value = log_likelihood
 
                 # identify if this distribution is better
-                best_distributions.append((distribution, params, BIC))
+                best_distributions.append((distribution, params, criterion_value))
 
         except Exception:
             pass
