@@ -40,36 +40,26 @@ def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
 
     # distributions
     distributions = {
-        #'Bernoulli': st.bernoulli, #not relevant unless true or false scenario
         "Betabinomial": st.betabinom,
         "Binomial": st.binom,
-        #'Boltzmann': st.boltzmann,
-        # 'Planck': st.planck,
         "Poisson": st.poisson,
         "Geometric": st.geom,
         "Hypergeometric": st.hypergeom,
         "Negative Binomial": st.nbinom,
-        # 'Fisher': st.nchypergeom_fisher, #slow
-        #'Wallenius': st.nchypergeom_wallenius, #slow
         "Negative Hypergeometric": st.nhypergeom,
         "Zipfian": st.zipfian,
         "Log-Series": st.logser,
         "Laplacian": st.dlaplace,
-        # 'Yule-Simon': st.yulesimon
-        # 'Zipf': st.zipf
+
     }
     if bound == True:
         distributions = {
-            # 'Bernoulli': st.bernoulli, #not relevant unless true or false scenario
             "Betabinomial": st.betabinom,
             "Binomial": st.binom,
-            #'Boltzmann': st.boltzmann,
-            # 'Planck': st.planck,
             "Poisson": st.poisson,
             "Geometric": st.geom,
             "Hypergeometric": st.hypergeom,
             "Negative Binomial": st.nbinom,
-            # 'Fisher': st.nchypergeom_fisher, #slow
         }
 
     # Best holders
@@ -135,7 +125,7 @@ def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
                 if criterion == "BIC":
                     criterion_value = -2 * log_likelihood + np.log(n) * k
                 elif criterion == "AIC":
-                    criterion_value = -2 * k - 2 * log_likelihood
+                    criterion_value = 2 * k - 2 * log_likelihood
                 elif criterion == "ML":
                     criterion_value = log_likelihood
 
@@ -214,7 +204,7 @@ def best_fit_distribution(data, criterion="BIC"):
                 if criterion == "BIC":
                     criterion_value = -2 * log_likelihood + np.log(n) * k
                 elif criterion == "AIC":
-                    criterion_value = -2 * k - 2 * log_likelihood
+                    criterion_value = 2 * k - 2 * log_likelihood
                 elif criterion == "ML":
                     criterion_value = log_likelihood
 
