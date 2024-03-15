@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 import numpy as np
 import pandas as pd
 import scipy.stats as st
-from vinecopula.marginals import *
+from vinecopulas.marginals import *
 import unittest
 
 

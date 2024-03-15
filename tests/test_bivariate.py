@@ -7,7 +7,7 @@ Created on Wed Mar 13 17:28:28 2024
 import warnings
 
 warnings.filterwarnings("ignore")
-from vinecopula.bivariate import *
+from vinecopulas.bivariate import *
 import numpy as np
 import unittest
 

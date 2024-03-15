@@ -7,8 +7,8 @@ Created on Wed Mar 13 17:49:04 2024
 import warnings
 
 warnings.filterwarnings("ignore")
-from vinecopula.vinecopula import *
-from vinecopula.marginals import *
+from vinecopulas.vinecopula import *
+from vinecopulas.marginals import *
 import numpy as np
 import unittest
 import pandas as pd
