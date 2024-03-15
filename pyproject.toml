@@ -3,7 +3,7 @@ requires = ["setuptools>=64.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vinecopula"
+name = "VineCopulas"
 version = "0.1"
 authors = [
     {name = "Judith Claassen", email = "j.n.claassen@vu.nl"},
@@ -26,7 +26,8 @@ dependencies = [
     "scipy",	
     "numpy",
     "pandas",
-    "matplotlib"
+    "matplotlib",
+    "networkx"
 ]
 
 [tool.setuptools.package-data]
@@ -37,5 +38,5 @@ tests = ["pytest"]
 docs = ["jupyter"]
 
 [project.urls]
-"Homepage" = "https://github.com/IVM-VU/vinecopula"
-"Documentation" = "https://vinecopula.readthedocs.io/en/latest/"
+"Homepage" = "https://github.com/IVM-VU/VineCopulas"
+"Documentation" = "https://vinecopulas.readthedocs.io/en/latest/"
