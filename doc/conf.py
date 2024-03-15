@@ -15,12 +15,12 @@ __location__ = os.path.dirname(os.path.abspath(__file__))
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.join(__location__, '../src'))
-module_dir = os.path.join(__location__, "../src/vinecopula")
+module_dir = os.path.join(__location__, "../src/vinecopulas")
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'vinecopula'
+project = 'vinecopulas'
 copyright = '2023, authors'
 #logo_only = True
 html_logo = 'logo2.png'
@@ -57,7 +57,7 @@ source_suffix = {
 
 #autoapi
 autoapi_type = 'python'
-autoapi_dirs = '../src/vinecopula'
+autoapi_dirs = '../src/vinecopulas'
 
 # The master toctree document.
 master_doc = 'index'
