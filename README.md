@@ -5,6 +5,7 @@
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/VU-IVM/VineCopulas)
 [![github license badge](https://img.shields.io/github/license/VU-IVM/VineCopulas)](https://github.com/VU-IVM/VineCopulas)
 [![Documentation Status](https://readthedocs.org/projects/vinecopulas/badge/?version=latest)](https://vinecopulas.readthedocs.io/en/latest/?badge=latest) 
+[![PyPI version](https://badge.fury.io/py/VineCopulas.svg)](https://badge.fury.io/py/VineCopulas)
 
 A pure python implementation for vine copulas
 
