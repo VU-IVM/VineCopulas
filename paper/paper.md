@@ -41,11 +41,8 @@ In the above example, a vine copula could be used to also model age in relation 
 
 `VineCopulas` is a Python package that is able to fit and simulate both bivariate and vine copulas. This package allows for both discrete as well as continuous input data, and can draw conditional samples for any variables of interest with the use of different vine structures (see Figure 1).
 
-<figure>
-  <img src="figure1.png" alt="Vine Copula Structure" >
-  <figcaption>Figure 1: A schematic representation of VineCopula functionalities. A) Samples from data, consisting of both continuous and discrete variables, are transformed using their marginal distributions. B) A vine copula is fit to the transformed data. Here, the first tree has nodes containing the variables and edges denoting the bivariate dependencies. The edges in the second tree denotes the dependency between all variables. C) Using the fitted vine copula, random samples are generated. D) As not every vine copula structure is suitable to generate conditional samples of every variable, a vine copula can also be fit conditionally. Here a vine copula is fit conditionally for variable 1. E) The conditionally fit vine copula is used to draw conditional samples of variable 1.  </figcaption>
-</figure>
 
+![A schematic representation of VineCopula functionalities. A) Samples from data, consisting of both continuous and discrete variables, are transformed using their marginal distributions. B) A vine copula is fit to the transformed data. Here, the first tree has nodes containing the variables and edges denoting the bivariate dependencies. The edges in the second tree denotes the dependency between all variables. C) Using the fitted vine copula, random samples are generated. D) As not every vine copula structure is suitable to generate conditional samples of every variable, a vine copula can also be fit conditionally. Here a vine copula is fit conditionally for variable 1. E) The conditionally fit vine copula is used to draw conditional samples of variable 1.\label{fig:schematic}](figure1.png)
 
 # Statement of need
 
