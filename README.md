@@ -9,4 +9,30 @@
 
 A pure python implementation for vine copulas
 
+## Installation
+
+```
+pip install vinecopulas
+```
+
+## Getting Started 
+
+Gest started by testing checking out the package functionality using the [Abalone](http://archive.ics.uci.edu/ml/datasets/Abalone) example data.
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from vinecopulas.marginals import *
+from vinecopulas.bivariate import *
+
+datapath = 'https://raw.githubusercontent.com/VU-IVM/vinecopula/develop/doc/sample_data.csv'
+df = pd.read_csv(datapath)
+df.head()
+```
+<img src="doc/table_head.JPG" width="300">
+
+## Contribution Guidelines
+---
+
 **Please note:** This package is still in development phase. In case of any problems, or if you have any suggestions for improvements, please raise an *issue*. 
