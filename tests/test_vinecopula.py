@@ -5,7 +5,6 @@ Created on Wed Mar 13 17:49:04 2024
 @author: jcl202
 """
 import warnings
-
 warnings.filterwarnings("ignore")
 from vinecopulas.vinecopula import *
 from vinecopulas.marginals import *
@@ -222,9 +221,12 @@ class Testvinecopula(unittest.TestCase):
 
     def test_vinecopstructure(self):
         cops = list(range(1, 16))  # all copulas
-        P, C = vinecopstructure(self.U, cops, self.M_C)
-        assert np.isclose(self.C_C, C, rtol=0.05, equal_nan=True).all()
-        assert self.P_C in P
+        P_C2, C_C2 = vinecopstructure(self.U, cops, self.M_C)
+        P_R2, C_R2 = vinecopstructure(self.U, cops, self.M_R)
+        assert np.isclose(self.C_C, C_C2, rtol=0.05, equal_nan=True).all()
+        assert self.P_C in P_C2
+        assert np.isclose(self.C_R, C_R2, rtol=0.05, equal_nan=True).all()
+        assert self.P_R in P_R2
 
     def test_samplecop(self):
         np.random.seed(10)

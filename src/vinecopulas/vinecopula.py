@@ -1138,10 +1138,14 @@ def vinecopstructure(u1, copsi, a):
             v1_1 = []
             v2_1 = []
             cops = []
+            tauabs = []
 
             for j in range(len(orderk)):
                 v1i = int(orderk.v1[j])  # first node
                 v2i = int(orderk.v2[j])  # second node
+                tauabs.append(
+                abs(st.kendalltau(u1[:, v1i], u1[:, v2i])[0])
+            ) 
                 u3 = np.vstack(
                     (u1[:, v1i], u1[:, v2i])
                 ).T  # stacking the combination to fit copula to
@@ -1156,15 +1160,26 @@ def vinecopstructure(u1, copsi, a):
             # add information to dataframe of the first tree
             orderk["rhos"] = rhos
             orderk["cop"] = cops
+            orderk["tauabs"] = tauabs
+            orderk = orderk.sort_values(by="tauabs", ascending=False)
+            v1_1 = v1_1[:, orderk.index]  # sort array of first node
+            v2_1 =  v2_1[:, orderk.index] # sort array of second node
+            orderk = orderk.reset_index(
+        drop=True
+    ) 
+            
+            
+            
+            
+            
 
         else:
 
             v1k = []
             v2k = []
+            tauabs = []
             for j in range(len(orderk)):
-                orderk2 = order[order.tree == t - 1].reset_index(
-                    drop=True
-                )  # Define possible nodes of edge
+                orderk2 = locals()["order" + str(t)] # Define possible nodes of edge
                 l = orderk.l[j] + orderk.r[j]
                 subnodes = []
                 for k in range(len(orderk2)):
