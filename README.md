@@ -54,9 +54,12 @@ Fit a vine copula between multiple variables in the data, considering all possib
 
 ```python
 cops = list(range(1,16)) # fit vine copula according to these copulas
-M, P, C = vinecop(u, cops, vine = 'R') #fit R-vine
-plotvine(M,variables = list(df.columns[:-1]), plottitle = 'R-Vine') #plot structure
+M, P, C = vinecop(u, cops, vine = 'R') # fit R-vine
+plotvine(M,variables = list(df.columns[:-1]), plottitle = 'R-Vine') # plot structure
 ```
+
+<img src="doc/vine_structure.jpg" width="300">
+<img src="doc/vine_example.png" width="300">
 
 ## Contribution Guidelines
 ---
