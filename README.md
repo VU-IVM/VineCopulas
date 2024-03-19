@@ -7,7 +7,11 @@
 [![Documentation Status](https://readthedocs.org/projects/vinecopulas/badge/?version=latest)](https://vinecopulas.readthedocs.io/en/latest/?badge=latest) 
 [![PyPI version](https://badge.fury.io/py/VineCopulas.svg)](https://badge.fury.io/py/VineCopulas)
 
-A pure python implementation for vine copulas
+`VineCopulas` is a Python package that is able to:
+* Fit both bivariate and vine copulas
+* Simulate from both bivariate and vine copulas
+* Allow for both discrete as well as continuous input data
+* Draw conditional samples for any variables of interest with the use of bivariate copulas and different vine structures
 
 ## Installation
 
