@@ -5,6 +5,7 @@ Created on Wed Mar 13 17:49:04 2024
 @author: jcl202
 """
 import warnings
+
 warnings.filterwarnings("ignore")
 from vinecopulas.vinecopula import *
 from vinecopulas.marginals import *
@@ -200,33 +201,30 @@ class Testvinecopula(unittest.TestCase):
 
     def test_vinecopR(self):
         cops = list(range(1, 16))  # all copulas
-        M, P, C = vinecop(self.U, cops, vine="R", printing=False)
+        M, P, C = fit_vinecop(self.U, cops, vine="R", printing=False)
         assert np.isclose(self.M_R, M, rtol=0.05, equal_nan=True).all()
         assert np.isclose(self.C_R, C, rtol=0.05, equal_nan=True).all()
         assert self.P_R in P
 
     def test_vinecopD(self):
         cops = list(range(1, 16))  # all copulas
-        M, P, C = vinecop(self.U, cops, vine="D", printing=False)
+        M, P, C = fit_vinecop(self.U, cops, vine="D", printing=False)
         assert np.isclose(self.M_D, M, rtol=0.05, equal_nan=True).all()
         assert np.isclose(self.C_D, C, rtol=0.05, equal_nan=True).all()
         assert self.P_D in P
 
     def test_vinecopC(self):
         cops = list(range(1, 16))  # all copulas
-        M, P, C = vinecop(self.U, cops, vine="C", printing=False)
+        M, P, C = fit_vinecop(self.U, cops, vine="C", printing=False)
         assert np.isclose(self.M_C, M, rtol=0.05, equal_nan=True).all()
         assert np.isclose(self.C_C, C, rtol=0.05, equal_nan=True).all()
         assert self.P_C in P
 
     def test_vinecopstructure(self):
         cops = list(range(1, 16))  # all copulas
-        P_C2, C_C2 = vinecopstructure(self.U, cops, self.M_C)
-        P_R2, C_R2 = vinecopstructure(self.U, cops, self.M_R)
-        assert np.isclose(self.C_C, C_C2, rtol=0.05, equal_nan=True).all()
-        assert self.P_C in P_C2
-        assert np.isclose(self.C_R, C_R2, rtol=0.05, equal_nan=True).all()
-        assert self.P_R in P_R2
+        P, C = fit_vinecopstructure(self.U, cops, self.M_C)
+        assert np.isclose(self.C_C, C, rtol=0.05, equal_nan=True).all()
+        assert self.P_C in P
 
     def test_samplecop(self):
         np.random.seed(10)
@@ -275,7 +273,7 @@ class Testvinecopula(unittest.TestCase):
                 [0.23588692, 0.28182591, 0.39815398, 0.20405075, 0.2237578, 0.30070006],
             ]
         )
-        ur_result = samplecop(self.M_R, self.P_R, self.C_R, 6)
+        ur_result = sample_vinecop(self.M_R, self.P_R, self.C_R, 6)
         assert np.isclose(ur_expected, ur_result, rtol=0.05, equal_nan=True).all()
 
     def test_vincopconditionalsample(self):
@@ -290,7 +288,7 @@ class Testvinecopula(unittest.TestCase):
                 [0.9142449, 0.94302835, 0.87124292, 0.82148805, 0.9, 0.9],
             ]
         )
-        ur_result = vincopconditionalsample(self.M_R, self.P_R, self.C_R, 6, [0.9, 0.9])
+        ur_result = sample_vinecopconditional(self.M_R, self.P_R, self.C_R, 6, [0.9, 0.9])
         assert np.isclose(ur_expected, ur_result, rtol=0.05, equal_nan=True).all()
 
     def test_samplingorder(self):
@@ -308,15 +306,15 @@ class Testvinecopula(unittest.TestCase):
     def test_conditionalvine1(self):
         cops = list(range(1, 16))  # all copulas
         vint = [2, 0]
-        MR, PR, CR = conditionalvine(
+        MR, PR, CR = fit_conditionalvine(
             self.U, vint, cops, vine="R", condition=1, printing=False
         )
         soR = list(np.diag(MR[::-1])[::-1])
-        MD, PD, CD = conditionalvine(
+        MD, PD, CD = fit_conditionalvine(
             self.U, vint, cops, vine="D", condition=1, printing=False
         )
         soD = list(np.diag(MD[::-1])[::-1])
-        MC, PC, CC = conditionalvine(
+        MC, PC, CC = fit_conditionalvine(
             self.U, vint, cops, vine="C", condition=1, printing=False
         )
         soC = list(np.diag(MC[::-1])[::-1])
@@ -330,15 +328,15 @@ class Testvinecopula(unittest.TestCase):
     def test_conditionalvine2(self):
         cops = list(range(1, 16))  # all copulas
         vint = [2, 0]
-        MR, PR, CR = conditionalvine(
+        MR, PR, CR = fit_conditionalvine(
             self.U, vint, cops, vine="R", condition=2, printing=False
         )
         soR = list(np.diag(MR[::-1])[::-1])
-        MD, PD, CD = conditionalvine(
+        MD, PD, CD = fit_conditionalvine(
             self.U, vint, cops, vine="D", condition=2, printing=False
         )
         soD = list(np.diag(MD[::-1])[::-1])
-        MC, PC, CC = conditionalvine(
+        MC, PC, CC = fit_conditionalvine(
             self.U, vint, cops, vine="C", condition=2, printing=False
         )
         soC = list(np.diag(MC[::-1])[::-1])
