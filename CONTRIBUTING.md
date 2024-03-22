@@ -22,42 +22,45 @@ If you have any suggestions for improvements, or questions, please also raise an
 
 ### Setting Up Your Development Environment
 
-1. Fork the repository.
-2. Clone your forked repository to your local machine:
+1. Clone the repository to your local machine:
 
     ```bash
     git clone https://github.com/VU-IVM/VineCopulas.git
     ```
 
-3. cerate a new environment to install the library with dependencies:
+3. Create a new environment to install the library with dependencies, for example using conda:
 
     ```bash
    conda create -n VineCopulasDev python=3
    conda activate VineCopulasDev
     ```
-install `VineCopulas` using the following command in the projects main directory
+   Install `VineCopulas` using the following command in the projects main directory
+
     ```bash
    pip install -e .
     ```
 
-4. Create a new branch for your changes:
+4. Checkout a new branch for your changes from the main branch:
 
     ```bash
     git checkout -b feature/your-feature-name
     ```
 
+5. Make your changes.
+
 ## Submitting a Pull Request
 
 Once you have made your changes and are ready to contribute, follow these steps to submit a pull request:
 
-1. Push your changes to your forked repository:
+1. Push your changes back to origin:
 
     ```bash
     git push origin feature/your-feature-name
     ```
 
-2. Navigate to the [original repository](https://github.com/original-repo/[Package Name]) and create a pull request.
-3. Provide a clear description of your changes in the pull request template.
+2. Create a pull request to merge your branch into the main branch.
+
+Provide a clear description of your changes in the pull request template.
 
 #### Pull request guidelines
 - Write clear and concise commit messages.
@@ -67,6 +70,6 @@ Once you have made your changes and are ready to contribute, follow these steps 
 
 ## Review Process
 
-All pull requests will undergo a review process before being merged. Reviewers may provide feedback or request changes to ensure the quality of the codebase.
+All pull requests will undergo a review process before being accepted. Reviewers may provide feedback or request changes to ensure the quality of the codebase.
 
 
