@@ -22,6 +22,121 @@ import sys
 
 copulas = {1: 'Gaussian', 2 : 'Gumbel0', 3 :'Gumbel90' , 4 : 'Gumbel180', 5 : 'Gumbel270', 6 : 'Clayton0', 7 : 'Clayton90', 8 : 'Clayton180', 9: 'Clayton270', 10: 'Frank', 11: 'Joe0', 12: 'Joe90', 13: 'Joe180', 14: 'Joe270', 15: 'Student'} 
 
+#%% fitting
+
+def fit(cop, u):
+    """
+    Fits a specific copula to data.
+    
+    Arguments:
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        
+        *u* : A 2-d numpy array containing the samples for which the copulae will be fit. Column 1 contains variable u1, and column 2 contains variable u2.
+     
+     
+    Returns:  
+     *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+      
+    """
+    u[u==1] = 0.999999
+    u[u==0] = 0.000001
+    #Gaussian
+    if cop == 1:
+        par = np.corrcoef(st.norm.ppf(u),rowvar=False)[0][1]
+        
+    # Gumbel and Clayton all rotations
+    if cop > 1 and cop < 10:
+        res = minimize_scalar(neg_likelihood, bounds=(1, 20), args=(cop, u), method='bounded')
+        par = res.x
+        
+    # Frank
+    if cop == 10:
+       res = minimize_scalar(neg_likelihood, bounds=(-20, 20), args=(cop, u), method='bounded')
+       par = res.x 
+       
+    # Joe all rotiations
+    if cop > 10 and cop < 15:
+        res = minimize_scalar(neg_likelihood, bounds=(1, 20), args=(cop, u), method='bounded')
+        par = res.x
+     
+    # Student    
+    if cop == 15:
+        u1 = u[:,0]
+        u2 = u[:,1]
+        rho = np.sin(0.5 * np.pi * st.kendalltau(u1,u2)[0])
+        R = np.array([[1, rho],
+                      [rho, 1]])
+
+        # Perform Cholesky decomposition
+        R= np.linalg.cholesky(R)
+
+        def invcdf(p):
+            if p <= 0.9:
+                q = (1000 / 9) * p
+            else:
+                q = 100 * (1 - 10 * (p - 0.9))**-5
+            return q
+
+        def negloglike(mu_, u, R):
+            nu_ = invcdf(mu_)
+            t_values = st.t.ppf(u, nu_)
+            tRinv =np.linalg.solve(R, t_values.T).T
+            
+            n,d = u.shape
+            
+            nll = -n * gammaln((nu_ + d) / 2) + n * d * gammaln((nu_ + 1) / 2) - n * (d - 1) * gammaln(nu_ / 2) \
+                  + n * np.sum(np.log(np.abs(np.diag(R)))) \
+                  + ((nu_ + d) / 2) * np.sum(np.log(1 + np.sum(tRinv ** 2, axis=1) / nu_)) \
+                  - ((nu_ + 1) / 2) * np.sum(np.sum(np.log(1 + t_values ** 2 / nu_), axis=1), axis=0)
+            
+            return nll
+
+
+        res =minimize_scalar(negloglike, args=(u,R), 
+             bounds=(0,1), method='bounded')
+        df = invcdf(res.x)
+        par = [rho, df]
+    return par
+
+#%% best fit
+
+
+def bestcop(cops, u):
+    """
+    Fits the best copula to data based on a selected list of copulas to fit to using the AIC.
+    
+    Arguments:
+        *cops* : A list of integers referring to the copulae of interest for which the fit has to be evaluated. eg. a list of [1, 10] refers to the Gaussian and Frank copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        
+        *u* : A 2-d numpy array containing the samples for which the copulae will be fit and evaluated. Column 1 contains variable u1, and column 2 contains variable u2.
+     
+     
+    Returns:  
+     *cop* : An integer referring to the copula with the best fit. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+         
+     *par* : The correlation parameters of the copula with the best fit, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+         
+     *aic* : The Akaike information criterion of the copula with the best fit.
+      
+    """
+    
+    AIC = []
+    PAR = []
+    for cop in cops:
+        par = fit(cop, u)
+        if cop == 15:
+            AIC.append(4 + (2 * neg_likelihood(par,cop,u)))
+            PAR.append(par)
+        else:
+            AIC.append(2 + (2 * neg_likelihood(par,cop,u)))
+            PAR.append(par)
+   
+    i = np.where(AIC == np.nanmin(AIC))[0][0]  
+    cop = cops[i]
+    par = PAR[i]
+    aic = AIC[i]
+    return cop, par, aic
+        
 
 #%%Copula random
 
@@ -295,7 +410,7 @@ def CDF(cop, u, par):
     Computes the cumulative distribution function.
     
     Arguments:
-        *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the CDF will be calculated. Column 1 contains variable u1, and column 2 contains variable u2.
      
@@ -787,118 +902,3 @@ def neg_likelihood(par,cop,u):
     l = -np.sum(np.log(PDF(cop, u, par)))
     return l
 
-#%% fitting
-
-def fit(cop, u):
-    """
-    Fits a specific copula to data.
-    
-    Arguments:
-        *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
-        
-        *u* : A 2-d numpy array containing the samples for which the copulae will be fit. Column 1 contains variable u1, and column 2 contains variable u2.
-     
-     
-    Returns:  
-     *par* : The correlation parameters of the copula, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
-      
-    """
-    u[u==1] = 0.999999
-    u[u==0] = 0.000001
-    #Gaussian
-    if cop == 1:
-        par = np.corrcoef(st.norm.ppf(u),rowvar=False)[0][1]
-        
-    # Gumbel and Clayton all rotations
-    if cop > 1 and cop < 10:
-        res = minimize_scalar(neg_likelihood, bounds=(1, 20), args=(cop, u), method='bounded')
-        par = res.x
-        
-    # Frank
-    if cop == 10:
-       res = minimize_scalar(neg_likelihood, bounds=(-20, 20), args=(cop, u), method='bounded')
-       par = res.x 
-       
-    # Joe all rotiations
-    if cop > 10 and cop < 15:
-        res = minimize_scalar(neg_likelihood, bounds=(1, 20), args=(cop, u), method='bounded')
-        par = res.x
-     
-    # Student    
-    if cop == 15:
-        u1 = u[:,0]
-        u2 = u[:,1]
-        rho = np.sin(0.5 * np.pi * st.kendalltau(u1,u2)[0])
-        R = np.array([[1, rho],
-                      [rho, 1]])
-
-        # Perform Cholesky decomposition
-        R= np.linalg.cholesky(R)
-
-        def invcdf(p):
-            if p <= 0.9:
-                q = (1000 / 9) * p
-            else:
-                q = 100 * (1 - 10 * (p - 0.9))**-5
-            return q
-
-        def negloglike(mu_, u, R):
-            nu_ = invcdf(mu_)
-            t_values = st.t.ppf(u, nu_)
-            tRinv =np.linalg.solve(R, t_values.T).T
-            
-            n,d = u.shape
-            
-            nll = -n * gammaln((nu_ + d) / 2) + n * d * gammaln((nu_ + 1) / 2) - n * (d - 1) * gammaln(nu_ / 2) \
-                  + n * np.sum(np.log(np.abs(np.diag(R)))) \
-                  + ((nu_ + d) / 2) * np.sum(np.log(1 + np.sum(tRinv ** 2, axis=1) / nu_)) \
-                  - ((nu_ + 1) / 2) * np.sum(np.sum(np.log(1 + t_values ** 2 / nu_), axis=1), axis=0)
-            
-            return nll
-
-
-        res =minimize_scalar(negloglike, args=(u,R), 
-             bounds=(0,1), method='bounded')
-        df = invcdf(res.x)
-        par = [rho, df]
-    return par
-
-#%% best fit
-
-
-def bestcop(cops, u):
-    """
-    Fits the best copula to data based on a selected list of copulas to fit to using the AIC.
-    
-    Arguments:
-        *cops* : A list of integers refering to the copulae of interest for which the fit has to be evauluated. eg. a list of [1, 10] refers to the Gaussian and Frank copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
-        
-        *u* : A 2-d numpy array containing the samples for which the copulae will be fit and evaluated. Column 1 contains variable u1, and column 2 contains variable u2.
-     
-     
-    Returns:  
-     *cop* : An integer refering to the copula with the best fit. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
-         
-     *par* : The correlation parameters of the copula with the best fit, provided as a scalar value for copulas with one parameter and as a list for copulas with more parameters (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
-         
-     *aic* : The Akaike information criterion of the copula with the best fit.
-      
-    """
-    
-    AIC = []
-    PAR = []
-    for cop in cops:
-        par = fit(cop, u)
-        if cop == 15:
-            AIC.append(4 + (2 * neg_likelihood(par,cop,u)))
-            PAR.append(par)
-        else:
-            AIC.append(2 + (2 * neg_likelihood(par,cop,u)))
-            PAR.append(par)
-   
-    i = np.where(AIC == np.nanmin(AIC))[0][0]  
-    cop = cops[i]
-    par = PAR[i]
-    aic = AIC[i]
-    return cop, par, aic
-        

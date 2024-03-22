@@ -7,7 +7,6 @@ Created on Thu Feb 22 17:13:20 2024
 
 
 import warnings
-
 warnings.filterwarnings("ignore")
 import numpy as np
 import pandas as pd
@@ -142,7 +141,7 @@ def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
 # %% best fit distribution
 def best_fit_distribution(data, criterion="BIC"):
     """
-    Fits the best continious distribution to data.
+    Fits the best continuous distribution to data.
 
     Arguments:
         *data* : The data which has to be fit as a 1-d numpy array.
@@ -220,14 +219,14 @@ def best_fit_distribution(data, criterion="BIC"):
 # %% pseudodata
 def pseudodata(data):
     """
-    Compute the pseudo-observations for the given data (tranfers data to standard uniform margins)
+    Compute the pseudo-observations for the given data (transforms data to standard uniform margins)
 
     Arguments:
-        *data* : The data which has to be converted into psuedo data, provided as a numpy array where each column contains a seperate variable (eg. x1,x2,...,xn)
+        *data* : The data which has to be converted into pseudo data, provided as a numpy array where each column contains a separate variable (eg. x1,x2,...,xn)
 
 
     Returns:
-     *u* : Psuedo data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un)
+     *u* : Pseudo data, provided as a numpy array where each column contains a separate variable (eg. u1,u2,...,un)
     """
 
     ranks = np.apply_along_axis(rankdata, axis=0, arr=data)
@@ -248,7 +247,7 @@ def pseudodiscr(xcdf, xpmf):
         *xpmf* : The probability mass function of the variable, calculated based on the best fit discrete distribution, provided as a 1-d numpy array.
 
     Returns:
-     *ui* : Psuedo data of a given variable  provided as a 1-d numpy array.
+     *ui* : Pseudo data of a given variable  provided as a 1-d numpy array.
     """
 
     # Reference: Mitskopoulos et al. 2022

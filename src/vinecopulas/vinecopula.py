@@ -40,7 +40,7 @@ copulas = {
 # %% fitting vinecopula
 
 
-def vinecop(u1, copsi, vine="R", printing=True):
+def fit_vinecop(u1, copsi, vine="R", printing=True):
     """
     Fit a regular vine copula to data.
 
@@ -1084,14 +1084,14 @@ def vinecop(u1, copsi, vine="R", printing=True):
 
 
 # %% fitting vine copula with sspecific structure
-def vinecopstructure(u1, copsi, a):
+def fit_vinecopstructure(u1, copsi, a):
     """
     Fit a regular vine copula to data based on a known vine structure matrix.
 
     Arguments:
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
 
-        *copsi* : A list of integers reffering to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        *copsi* : A list of integers referring to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] reffers to the Gaussian and Frank copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
 
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer refers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
 
@@ -1303,7 +1303,7 @@ def vinecopstructure(u1, copsi, a):
 
 
 # %% Sampling vine copula
-def samplecop(a, p, c, s):
+def sample_vinecop(a, p, c, s):
     """
     Generate random samples from an R-vine.
 
@@ -1397,7 +1397,7 @@ def samplecop(a, p, c, s):
 
 
 # %% Sampling conditonal vine copula
-def vincopconditionalsample(a, p, c, s, Xc):
+def sample_vinecopconditional(a, p, c, s, Xc):
     """
     Generate conditional samples from an R-vine based on a provided sampling order
 
@@ -1674,7 +1674,7 @@ def samplingmatrix(a, c, p, sorder):
 # %%
 
 
-def conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
+def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
     """
     Fit a regular vine copula which allows for a conditional sample of a variable of interest.
 
