@@ -3,7 +3,7 @@
 
 # Contributing to VineCopulas
 
-Welcome to VineCopulas! We appreciate your interest in contributing to this project. By contributing, you can help make VineCopulas better for everyone. Please take a moment to review the following guidelines before making your contribution.
+Welcome to `VineCopulas`! We appreciate your interest in contributing to this project. By contributing, you can help make `VineCopulas` better for everyone. Please take a moment to review the following guidelines before making your contribution.
 
 ## Code of Conduct
 
@@ -14,7 +14,7 @@ to j.n.claassen@vu.nl.
 
 ## Asking questions and reporting Issues
 
-If you encounter any bugs or issues while using VineCopulas, please report them by opening an *issue* in the GitHub repository. Be sure to provide detailed information about the problem, such as steps to reproduce it, including operating system and Python version.
+If you encounter any bugs or issues while using `VineCopulas`, please report them by opening an *issue* in the GitHub repository. Be sure to provide detailed information about the problem, such as steps to reproduce it, including operating system and Python version.
 
 If you have any suggestions for improvements, or questions, please also raise an *issue*. 
 
@@ -29,10 +29,15 @@ If you have any suggestions for improvements, or questions, please also raise an
     git clone https://github.com/VU-IVM/VineCopulas.git
     ```
 
-3. Install dependencies:
+3. cerate a new environment to install the library with dependencies:
 
     ```bash
-    # Instructions for installing dependencies
+   conda create -n VineCopulasDev python=3
+   conda activate VineCopulasDev
+    ```
+install `VineCopulas` using the following command in the projects main directory
+    ```bash
+   pip install -e .
     ```
 
 4. Create a new branch for your changes:
@@ -40,16 +45,6 @@ If you have any suggestions for improvements, or questions, please also raise an
     ```bash
     git checkout -b feature/your-feature-name
     ```
-
-5. Make your changes and ensure that your code follows the project's guidelines.
-
-## Making Changes
-
-When making changes, please adhere to the following guidelines:
-
-- Follow the [code style guidelines](#code-style-guidelines).
-- Write clear and concise commit messages.
-- Test your changes thoroughly before submitting a pull request.
 
 ## Submitting a Pull Request
 
@@ -67,7 +62,7 @@ Once you have made your changes and are ready to contribute, follow these steps 
 #### Pull request guidelines
 - Write clear and concise commit messages.
 - Test your changes thoroughly before submitting a pull request.
-- If the pull request adds functionality, the docs should also be updated. Improving documentation helps users better understand how to use VinceCopulas
+- If the pull request adds functionality, the docs should also be updated. Improving documentation helps users better understand how to use `VineCopulas`
 
 
 ## Review Process
