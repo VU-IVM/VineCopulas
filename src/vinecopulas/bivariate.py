@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 22 16:39:03 2024
 
-@author: jcl202
+
 """
 
 import warnings
@@ -528,7 +528,7 @@ def PDF(cop, u, par):
     Computes the probability density function.
     
     Arguments:
-        *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the PDF will be calculated. Column 1 contains variable u1, and column 2 contains variable u2.
      
@@ -628,7 +628,7 @@ def hfunc(cop, u1, u2, par, un = 1):
     Computes the h-function (conditional CDF) of a copula with respect to variable u1 or u2.
     
     Arguments:
-        *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__)
         
         *u1* : A 1-d numpy array containing the samples of variable u1
         
@@ -778,7 +778,7 @@ def hfuncinverse(cop, ui, y, par, un = 1):
     Computes the inverse h-function (inverse conditional CDF) of a copula with respect to variable u1 or u2.
     
     Arguments:
-        *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *ui* : A 1-d numpy array containing the samples of variable u1, if evaluated with respect to u1, or u2 if evaluated with respect to u2.
         
@@ -889,7 +889,7 @@ def neg_likelihood(par,cop,u):
     Computes the negative likelihood function.
     
     Arguments:
-        *cop* : An integer refering to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+        *cop* : An integer referring to the copula of choice. eg. a 1 refers to the gaussian copula (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
         
         *u* : A 2-d numpy array containing the samples for which the CDF will be calculated. Column 1 contains variable u1, and column 2 contains variable u2.
      
