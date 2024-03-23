@@ -65,7 +65,14 @@ plotvine(M,variables = list(df.columns[:-1]), plottitle = 'R-Vine') # plot struc
 <img src="doc/vine_structure.JPG" width="600">
 <img src="doc/vine_example.png" width="600">
 
+For more examples, please have a look at the [documentation](https://vinecopulas.readthedocs.io/en/latest/).
 ## Contribution Guidelines
 ---
 
-**Please note:** This package is still in development phase. In case of any problems, or if you have any suggestions for improvements, please raise an *issue*. 
+Please look at our [Contributing Guidelines](https://github.com/VU-IVM/VineCopulas/blob/02c24201411677f6968e0f0caefc749c74796715/CONTRIBUTING.md) if you are interested in contributing to this package.
+
+## Asking questions and reporting Issues
+
+If you encounter any bugs or issues while using `VineCopulas`, please report them by opening an *issue* in the GitHub repository. Be sure to provide detailed information about the problem, such as steps to reproduce it, including operating system and Python version.
+
+If you have any suggestions for improvements, or questions, please also raise an *issue*. 
