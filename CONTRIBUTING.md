@@ -12,7 +12,7 @@ This project and everyone participating in it is governed by the
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to j.n.claassen@vu.nl.
 
-## Asking questions and reporting Issues
+## Asking Questions and Reporting Issues
 
 If you encounter any bugs or issues while using `VineCopulas`, please report them by opening an *issue* in the GitHub repository. Be sure to provide detailed information about the problem, such as steps to reproduce it, including operating system and Python version.
 
@@ -62,7 +62,7 @@ Once you have made your changes and are ready to contribute, follow these steps 
 
 Provide a clear description of your changes in the pull request template.
 
-#### Pull request guidelines
+#### Pull Request Guidelines
 - Write clear and concise commit messages.
 - Test your changes thoroughly before submitting a pull request.
 - If the pull request adds functionality, the docs should also be updated. Improving documentation helps users better understand how to use `VineCopulas`
