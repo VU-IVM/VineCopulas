@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "VineCopulas"
-version = "0.2.4"
+version = "0.2.5"
 authors = [
     {name = "Judith Claassen", email = "j.n.claassen@vu.nl"},
 ]
@@ -19,7 +19,7 @@ classifiers=[
         "Topic :: Scientific/Engineering :: GIS",
         "Topic :: Utilities",
     ]
-readme = "README.md"
+readme = "README_PYPI.md"
 requires-python = ">=3.9"
 dependencies = [
     "numpy",
