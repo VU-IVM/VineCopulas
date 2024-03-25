@@ -1,5 +1,5 @@
 # VineCopulas
-<img align="right" width="200" alt="Logo" src="https://github.com/VU-IVM/VineCopulas/blob/b67ac132b4d48e316f819b8a467d40e6d1bff146/doc/logogif.gif">
+<img align="right" width="200" alt="Logo" src="https://github.com/VU-IVM/VineCopulas/blob/main/doc/logo2.png">
 
 
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/VU-IVM/VineCopulas)
@@ -34,7 +34,7 @@ datapath = 'https://raw.githubusercontent.com/VU-IVM/vinecopula/develop/doc/samp
 df = pd.read_csv(datapath)
 df.head()
 ```
-<img src="doc/table_head.JPG" width="500">
+<img src="https://github.com/VU-IVM/VineCopulas/blob/main/doc/table_head.JPG" width="500">
 
 Transform the data to pseudo data and fit a survival gumbel copula between two variables. Use the fitted copula to generate random samples.
 
@@ -52,7 +52,7 @@ plt.xlabel('$u_1$')
 plt.ylabel('$u_2$')
 plt.legend()
 ```
-<img src="doc/bivariate_example.png" width="600">
+<img src="https://github.com/VU-IVM/VineCopulas/blob/main/doc/bivariate_example.png" width="600">
 
 Fit a vine copula between multiple variables in the data, considering all possible copulas available in the package.
 
@@ -62,8 +62,8 @@ M, P, C = fit_vinecop(u, cops, vine = 'R') # fit R-vine
 plotvine(M,variables = list(df.columns[:-1]), plottitle = 'R-Vine') # plot structure
 ```
 
-<img src="doc/vine_structure.JPG" width="600">
-<img src="doc/vine_example.png" width="600">
+<img src="https://github.com/VU-IVM/VineCopulas/blob/main/doc/vine_structure.JPG" width="600">
+<img src="https://github.com/VU-IVM/VineCopulas/blob/main/doc/vine_example.png" width="600">
 
 For more examples, please have a look at the [documentation](https://vinecopulas.readthedocs.io/en/latest/).
 ## Contribution Guidelines
