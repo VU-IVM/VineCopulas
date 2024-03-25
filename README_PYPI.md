@@ -1,5 +1,5 @@
 # VineCopulas
-<img align="right" width="200" src="https://github.com/VU-IVM/VineCopulas/raw/main/doc/logogif.gif">
+<img align="right" width="200" src="https://raw.githubusercontent.com/VU-IVM/VineCopulas/main/doc/logo2.png">
 
 
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/VU-IVM/VineCopulas)
