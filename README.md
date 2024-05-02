@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from vinecopulas.marginals import *
 from vinecopulas.bivariate import *
+from vinecopulas.vinecopula import *
 
 datapath = 'https://raw.githubusercontent.com/VU-IVM/vinecopula/develop/doc/sample_data.csv'
 df = pd.read_csv(datapath)
