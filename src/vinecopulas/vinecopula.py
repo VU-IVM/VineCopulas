@@ -2044,42 +2044,45 @@ def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
             order2 = order1.loc[l[0]].to_frame().T.reset_index(drop=True)
             vi = order2.v1[0]  # select the first variable included in this row
             vj = order2.v2[0]  # select the second variable included in this row
-            for i in l:
-                if (
-                    order1.v1[i] == vj
-                    or order1.v2[i] == vi
-                    or order1.v1[i] == vi
-                    or order1.v2[i] == vj
-                ):  # find the rows which include at least one of the two variables from the previous edge
+            while len(order2) < len(Y) - 1:
+                for i in l:
                     if (
-                        order1.v1[i] in inde or order1.v2[i] in inde
-                    ):  # check if variables have already been connected to other variables twice
-                        continue
-                    if (order1.v1[i] == vi and order1.v2[i] == vj) or (
-                        order1.v1[i] == vj and order1.v2[i] == vi
-                    ):  # skip rows that have already been used
-                        continue
-
-                    else:
-                        order2 = pd.concat(
-                            [order2, order1.loc[i].to_frame().T], ignore_index=True
-                        )  # if conditions are met, add this to the dataframe of the first tree
+                        order1.v1[i] == vj
+                        or order1.v2[i] == vi
+                        or order1.v1[i] == vi
+                        or order1.v2[i] == vj
+                    ):  # find the rows which include at least one of the two variables from the previous edge
                         if (
-                            order1.v1[i] == vj or order1.v2[i] == vj
-                        ):  # check which value has been used twice already
-                            inde.append(vj)  # add this value to inde
-                            if order1.v1[i] == vj:
-                                vj = order1.v2[i]  # select the new edge to connect to
-                            else:
-                                vj = order1.v1[i]  # select the new edge to connect to
-                        elif (
-                            order1.v1[i] == vi or order1.v2[i] == vi
-                        ):  # check which value has been used twice already
-                            inde.append(vi)  # add this value to inde
-                            if order1.v1[i] == vi:
-                                vi = order1.v2[i]  # select the new edge to connect to
-                            else:
-                                vi = order1.v1[i]  # select the new edge to connect to
+                            order1.v1[i] in inde or order1.v2[i] in inde
+                        ):  # check if variables have already been connected to other variables twice
+                            continue
+                        if (order1.v1[i] == vi and order1.v2[i] == vj) or (
+                            order1.v1[i] == vj and order1.v2[i] == vi
+                        ):  # skip rows that have already been used
+                            continue
+
+                        else:
+                            order2 = pd.concat(
+                                [order2, order1.loc[i].to_frame().T], ignore_index=True
+                            )  # if conditions are met, add this to the dataframe of the first tree
+                            if (
+                                order1.v1[i] == vj or order1.v2[i] == vj
+                            ):  # check which value has been used twice already
+                                inde.append(vj)  # add this value to inde
+                                if order1.v1[i] == vj:
+                                    vj = order1.v2[i]  # select the new edge to connect to
+                                else:
+                                    vj = order1.v1[i]  # select the new edge to connect to
+                                break
+                            elif (
+                                order1.v1[i] == vi or order1.v2[i] == vi
+                            ):  # check which value has been used twice already
+                                inde.append(vi)  # add this value to inde
+                                if order1.v1[i] == vi:
+                                    vi = order1.v2[i]  # select the new edge to connect to
+                                else:
+                                    vi = order1.v1[i]  # select the new edge to connect to
+                                break
             for i in l2:
                 if (
                     order1.v1[i] == vj

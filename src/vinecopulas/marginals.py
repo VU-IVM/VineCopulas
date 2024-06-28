@@ -139,7 +139,7 @@ def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
 
 
 # %% best fit distribution
-def best_fit_distribution(data, criterion="BIC"):
+def best_fit_distribution(data, criterion="BIC", dists = []):
     """
     Fits the best continuous distribution to data.
 
@@ -147,6 +147,8 @@ def best_fit_distribution(data, criterion="BIC"):
         *data* : The data which has to be fit as a 1-d numpy array.
 
         *criterion* : Either BIC, AIC or ML is used to choose the best distribution
+        
+        *dists* : Specify specific distributions if only specific distributions need to be tested, provided as a list.
 
     Returns:
      *bestdist* : the best distribution and its parameters.
@@ -171,6 +173,22 @@ def best_fit_distribution(data, criterion="BIC"):
         "t location-scale": st.t,
         "Weibull": st.weibull_min,
     }
+    
+    if len(dists)> 0:
+        keys_list = list(distributions.keys())
+    
+        keys_list2 = []
+        for i in dists:
+            keys_list2.append(keys_list[i])
+            
+        distributions = dict((k, distributions[k]) for k in keys_list2
+               if k in distributions)
+    
+   
+        
+    
+    
+    
 
     # Best holders
     best_distributions = []
