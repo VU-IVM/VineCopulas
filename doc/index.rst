@@ -95,6 +95,7 @@ For more examples, please have a look at the rest of the
 `documentation <https://vinecopulas.readthedocs.io/en/latest/>`__. 
 
 Contribution Guidelines
+-----------------------
 
 Please look at our `Contributing
 Guidelines <https://github.com/VU-IVM/VineCopulas/blob/02c24201411677f6968e0f0caefc749c74796715/CONTRIBUTING.md>`__
