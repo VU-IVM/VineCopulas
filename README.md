@@ -21,7 +21,7 @@ pip install vinecopulas
 
 ## Getting Started 
 
-Get started by testing checking out the package functionality using the [Abalone](http://archive.ics.uci.edu/ml/datasets/Abalone) example data.
+Get started by testing out the package functionality using the [Abalone](http://archive.ics.uci.edu/ml/datasets/Abalone) example data.
 
 ```python
 import pandas as pd
