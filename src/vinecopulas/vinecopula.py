@@ -1082,6 +1082,94 @@ def fit_vinecop(u1, copsi, vine="R", printing=True):
 
     return a, p, c
 
+def PDF_vinecop(u, M, P, C):
+    """
+    Computes the probability density function of a vine copula.
+
+    Arguments:
+        *u* :  A 2-d numpy array containing the samples for which the PDF will be calculated.
+
+        *M* : The vine tree structure provided as a triangular matrix, composed of integers. The integer refers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+
+        *P* : Parameters of the bivariate copulae provided as a triangular matrix.
+
+        *C* : The types of the bivariate copulae provided as a triangular matrix, composed of integers referring to the copulae with the best fit. eg. a 1 refers to the gaussian copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+
+
+
+
+    Returns:
+     *F* : : A 1-d numpy array containing the probability density function of the vine copula
+
+    """
+    U = u[:,list(np.diag(M[::-1])[::-1].astype(int))]
+
+    a = M.copy()
+    p = P.copy()
+    c = C.copy()
+    s = len(u)
+    Ms = np.flipud(a)  # flip structure matrix
+    P = np.flipud(p)  # flip parameter matrix
+    C = np.flipud(c)  # flip copula matrix
+
+    replace = {}  # dictionary for relabeling martix
+    for i in range(int(max(np.unique(Ms)) + 1)):
+        val = max(np.unique(Ms)) - i
+        replace.update({Ms[i, i]: val})  # relabel
+
+    Ms = np.nan_to_num(Ms, nan=int(max(np.unique(Ms)) + 1))
+    replace_func = np.vectorize(
+        lambda x: replace.get(x, x)
+    )  # Create a vectorized function for replacement
+    M = replace_func(Ms)  # relabel
+    M[M == np.max(Ms)] = np.nan
+    Mm = M.copy()
+    # max matrix
+    for i in range(M.shape[0]):
+        for k in range(M.shape[0]):
+            if k == i:
+                continue
+            if i == 0:
+                continue
+            Mm[i, k] = max(Mm[i:, k])
+
+    # Vdirect
+    Vdir = np.empty((s, M.shape[0], M.shape[0]))
+    Vdir[:] = np.nan
+    # Vindirect
+    Vindir = np.empty((s, M.shape[0], M.shape[0]))
+    Vindir[:] = np.nan
+    # Z2
+    Z2 = np.empty((s, M.shape[0], M.shape[0]))
+    Z2[:] = np.nan
+    # Z1
+    Z1 = np.empty((s, M.shape[0], M.shape[0]))
+    Z2[:] = np.nan
+    Vdir[:, -1, :] =  np.flip(U.copy(), 1)
+    X = np.flip(U.copy(), 1)
+    n = M.shape[0] - 1
+    F = 1
+
+    for k in list(reversed((range(0,n)))):
+        for i in range(k+1, n+1)[::-1]:
+
+            Z1[:, i, k] = Vdir[:, i, k]
+            if M[i, k] == Mm[i, k]:
+                Z2[:, i, k] = Vdir[:, i, int(n - Mm[i, k])]
+            else:
+                Z2[:, i, k] = Vindir[:, i, int(n - Mm[i, k])]
+            
+
+            F = F * PDF(int(C[i, k]),np.vstack((Z1[:, i, k], Z2[:, i, k])).T,P[i, k])
+            Vdir[:, int(i - 1), k] = hfunc(
+                int(C[i, k]), Z1[:, i, k], Z2[:, i, k], P[i, k], un=2
+            )
+            Vindir[:, int(i - 1), k] = hfunc(
+                int(C[i, k]), Z1[:, i, k], Z2[:, i, k], P[i, k], un=1
+            )
+    return F
+
+    
 
 # %% fitting vine copula with sspecific structure
 def fit_vinecopstructure(u1, copsi, a):
