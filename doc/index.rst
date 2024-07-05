@@ -18,7 +18,7 @@ Installation
 
 
 
-Contents
+Documentation Contents
 --------
 
 .. toctree::
@@ -71,6 +71,10 @@ between two variables. Use the fitted copula to generate random samples.
    plt.ylabel('$u_2$')
    plt.legend()
 
+.. image:: https://raw.githubusercontent.com/VU-IVM/VineCopulas/main/doc/bivariate_example.png
+   :width: 600px
+   :alt: bivariate example
+
 Fit a vine copula between multiple variables in the data, considering
 all possible copulas available in the package.
 
@@ -80,9 +84,17 @@ all possible copulas available in the package.
    M, P, C = fit_vinecop(u, cops, vine = 'R') # fit R-vine
    plotvine(M,variables = list(df.columns[:-1]), plottitle = 'R-Vine') # plot structure
 
-For more examples, please have a look at the
-`documentation <https://vinecopulas.readthedocs.io/en/latest/>`__. ##
-Contribution Guidelines —
+.. image:: https://raw.githubusercontent.com/VU-IVM/VineCopulas/main/doc/vine_structure.JPG
+   :width: 600px
+   :alt: vine structure
+.. image:: https://raw.githubusercontent.com/VU-IVM/VineCopulas/main/doc/vine_example.png
+   :width: 600px
+   :alt: vine example
+
+For more examples, please have a look at the rest of the 
+`documentation <https://vinecopulas.readthedocs.io/en/latest/>`__. 
+
+Contribution Guidelines
 
 Please look at our `Contributing
 Guidelines <https://github.com/VU-IVM/VineCopulas/blob/02c24201411677f6968e0f0caefc749c74796715/CONTRIBUTING.md>`__
