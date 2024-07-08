@@ -1082,9 +1082,9 @@ def fit_vinecop(u1, copsi, vine="R", printing=True):
 
     return a, p, c
 
-def PDF_vinecop(u, M, P, C):
+def density_vinecop(u, M, P, C):
     """
-    Computes the probability density function of a vine copula.
+    Computes the density function of a vine copula.
 
     Arguments:
         *u* :  A 2-d numpy array containing the samples for which the PDF will be calculated.
@@ -1099,7 +1099,7 @@ def PDF_vinecop(u, M, P, C):
 
 
     Returns:
-     *F* : : A 1-d numpy array containing the probability density function of the vine copula
+     *F* :  A 1-d numpy array containing the probability density function of the vine copula
 
     """
     U = u[:,list(np.diag(M[::-1])[::-1].astype(int))]
