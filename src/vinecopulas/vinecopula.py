@@ -1082,6 +1082,94 @@ def fit_vinecop(u1, copsi, vine="R", printing=True):
 
     return a, p, c
 
+def density_vinecop(u, M, P, C):
+    """
+    Computes the density function of a vine copula.
+
+    Arguments:
+        *u* :  A 2-d numpy array containing the samples for which the PDF will be calculated.
+
+        *M* : The vine tree structure provided as a triangular matrix, composed of integers. The integer refers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
+
+        *P* : Parameters of the bivariate copulae provided as a triangular matrix.
+
+        *C* : The types of the bivariate copulae provided as a triangular matrix, composed of integers referring to the copulae with the best fit. eg. a 1 refers to the gaussian copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
+
+
+
+
+    Returns:
+     *F* :  A 1-d numpy array containing the probability density function of the vine copula
+
+    """
+    U = u[:,list(np.diag(M[::-1])[::-1].astype(int))]
+
+    a = M.copy()
+    p = P.copy()
+    c = C.copy()
+    s = len(u)
+    Ms = np.flipud(a)  # flip structure matrix
+    P = np.flipud(p)  # flip parameter matrix
+    C = np.flipud(c)  # flip copula matrix
+
+    replace = {}  # dictionary for relabeling martix
+    for i in range(int(max(np.unique(Ms)) + 1)):
+        val = max(np.unique(Ms)) - i
+        replace.update({Ms[i, i]: val})  # relabel
+
+    Ms = np.nan_to_num(Ms, nan=int(max(np.unique(Ms)) + 1))
+    replace_func = np.vectorize(
+        lambda x: replace.get(x, x)
+    )  # Create a vectorized function for replacement
+    M = replace_func(Ms)  # relabel
+    M[M == np.max(Ms)] = np.nan
+    Mm = M.copy()
+    # max matrix
+    for i in range(M.shape[0]):
+        for k in range(M.shape[0]):
+            if k == i:
+                continue
+            if i == 0:
+                continue
+            Mm[i, k] = max(Mm[i:, k])
+
+    # Vdirect
+    Vdir = np.empty((s, M.shape[0], M.shape[0]))
+    Vdir[:] = np.nan
+    # Vindirect
+    Vindir = np.empty((s, M.shape[0], M.shape[0]))
+    Vindir[:] = np.nan
+    # Z2
+    Z2 = np.empty((s, M.shape[0], M.shape[0]))
+    Z2[:] = np.nan
+    # Z1
+    Z1 = np.empty((s, M.shape[0], M.shape[0]))
+    Z2[:] = np.nan
+    Vdir[:, -1, :] =  np.flip(U.copy(), 1)
+    X = np.flip(U.copy(), 1)
+    n = M.shape[0] - 1
+    F = 1
+
+    for k in list(reversed((range(0,n)))):
+        for i in range(k+1, n+1)[::-1]:
+
+            Z1[:, i, k] = Vdir[:, i, k]
+            if M[i, k] == Mm[i, k]:
+                Z2[:, i, k] = Vdir[:, i, int(n - Mm[i, k])]
+            else:
+                Z2[:, i, k] = Vindir[:, i, int(n - Mm[i, k])]
+            
+
+            F = F * PDF(int(C[i, k]),np.vstack((Z1[:, i, k], Z2[:, i, k])).T,P[i, k])
+            Vdir[:, int(i - 1), k] = hfunc(
+                int(C[i, k]), Z1[:, i, k], Z2[:, i, k], P[i, k], un=2
+            )
+            Vindir[:, int(i - 1), k] = hfunc(
+                int(C[i, k]), Z1[:, i, k], Z2[:, i, k], P[i, k], un=1
+            )
+    return F
+
+    
 
 # %% fitting vine copula with sspecific structure
 def fit_vinecopstructure(u1, copsi, a):
@@ -2044,42 +2132,45 @@ def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
             order2 = order1.loc[l[0]].to_frame().T.reset_index(drop=True)
             vi = order2.v1[0]  # select the first variable included in this row
             vj = order2.v2[0]  # select the second variable included in this row
-            for i in l:
-                if (
-                    order1.v1[i] == vj
-                    or order1.v2[i] == vi
-                    or order1.v1[i] == vi
-                    or order1.v2[i] == vj
-                ):  # find the rows which include at least one of the two variables from the previous edge
+            while len(order2) < len(Y) - 1:
+                for i in l:
                     if (
-                        order1.v1[i] in inde or order1.v2[i] in inde
-                    ):  # check if variables have already been connected to other variables twice
-                        continue
-                    if (order1.v1[i] == vi and order1.v2[i] == vj) or (
-                        order1.v1[i] == vj and order1.v2[i] == vi
-                    ):  # skip rows that have already been used
-                        continue
-
-                    else:
-                        order2 = pd.concat(
-                            [order2, order1.loc[i].to_frame().T], ignore_index=True
-                        )  # if conditions are met, add this to the dataframe of the first tree
+                        order1.v1[i] == vj
+                        or order1.v2[i] == vi
+                        or order1.v1[i] == vi
+                        or order1.v2[i] == vj
+                    ):  # find the rows which include at least one of the two variables from the previous edge
                         if (
-                            order1.v1[i] == vj or order1.v2[i] == vj
-                        ):  # check which value has been used twice already
-                            inde.append(vj)  # add this value to inde
-                            if order1.v1[i] == vj:
-                                vj = order1.v2[i]  # select the new edge to connect to
-                            else:
-                                vj = order1.v1[i]  # select the new edge to connect to
-                        elif (
-                            order1.v1[i] == vi or order1.v2[i] == vi
-                        ):  # check which value has been used twice already
-                            inde.append(vi)  # add this value to inde
-                            if order1.v1[i] == vi:
-                                vi = order1.v2[i]  # select the new edge to connect to
-                            else:
-                                vi = order1.v1[i]  # select the new edge to connect to
+                            order1.v1[i] in inde or order1.v2[i] in inde
+                        ):  # check if variables have already been connected to other variables twice
+                            continue
+                        if (order1.v1[i] == vi and order1.v2[i] == vj) or (
+                            order1.v1[i] == vj and order1.v2[i] == vi
+                        ):  # skip rows that have already been used
+                            continue
+
+                        else:
+                            order2 = pd.concat(
+                                [order2, order1.loc[i].to_frame().T], ignore_index=True
+                            )  # if conditions are met, add this to the dataframe of the first tree
+                            if (
+                                order1.v1[i] == vj or order1.v2[i] == vj
+                            ):  # check which value has been used twice already
+                                inde.append(vj)  # add this value to inde
+                                if order1.v1[i] == vj:
+                                    vj = order1.v2[i]  # select the new edge to connect to
+                                else:
+                                    vj = order1.v1[i]  # select the new edge to connect to
+                                break
+                            elif (
+                                order1.v1[i] == vi or order1.v2[i] == vi
+                            ):  # check which value has been used twice already
+                                inde.append(vi)  # add this value to inde
+                                if order1.v1[i] == vi:
+                                    vi = order1.v2[i]  # select the new edge to connect to
+                                else:
+                                    vi = order1.v1[i]  # select the new edge to connect to
+                                break
             for i in l2:
                 if (
                     order1.v1[i] == vj
