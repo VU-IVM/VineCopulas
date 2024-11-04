@@ -19,10 +19,14 @@ from scipy.linalg import cholesky
 from itertools import product
 import sys
 
+from typing import Tuple, List, Literal
+DISCRETE_DIST_TYPE =  Tuple[st.rv_discrete, np.ndarray, float]
+CONTINUOUS_DIST_TYPE = Tuple[st.rv_continuous, np.ndarray, float]
+
 # %% best fit discrete distribution
 
 
-def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
+def best_fit_distributiondiscrete(data: np.ndarray, bound: bool=False, criterion: Literal["AIC", "BIC", "ML"]="BIC") -> DISCRETE_DIST_TYPE:
     """
     Fits the best discrete distribution to data.
 
@@ -34,7 +38,7 @@ def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
         *criterion* : Either BIC, AIC or ML is used to choose the best distribution
 
     Returns:
-     *bestdist* : the best distribution and its parameters.
+     *bestdist* : the best distribution and its parameters, as a tuple of (distribution, parameters, criterion_value).
     """
 
     # distributions
@@ -138,8 +142,9 @@ def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
     return bestdist
 
 
+
 # %% best fit distribution
-def best_fit_distribution(data, criterion="BIC", dists = []):
+def best_fit_distribution(data: np.ndarray, criterion: Literal["BIC", "AIC", "ML"]="BIC", dists: List["str"] = [])-> CONTINUOUS_DIST_TYPE:
     """
     Fits the best continuous distribution to data.
 
@@ -235,7 +240,7 @@ def best_fit_distribution(data, criterion="BIC", dists = []):
 
 
 # %% pseudodata
-def pseudodata(data):
+def pseudodata(data: np.ndarray) -> np.ndarray:
     """
     Compute the pseudo-observations for the given data (transforms data to standard uniform margins)
 
@@ -255,7 +260,7 @@ def pseudodata(data):
 
 
 # %%
-def pseudodiscr(xcdf, xpmf):
+def pseudodiscr(xcdf:np.ndarray, xpmf:np.ndarray) -> np.ndarray:
     """
     Compute the pseudo-observations for the given variable that is discrete.
 
