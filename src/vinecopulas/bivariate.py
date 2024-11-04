@@ -17,14 +17,15 @@ from scipy.special import gammaln
 from scipy.linalg import cholesky
 from itertools import product
 import sys
-
+from typing import Tuple, List, Union, Literal
+CORR_PARAM_TYPE = Union[float, List[float]]
 #%% Copulas
 
 copulas = {1: 'Gaussian', 2 : 'Gumbel0', 3 :'Gumbel90' , 4 : 'Gumbel180', 5 : 'Gumbel270', 6 : 'Clayton0', 7 : 'Clayton90', 8 : 'Clayton180', 9: 'Clayton270', 10: 'Frank', 11: 'Joe0', 12: 'Joe90', 13: 'Joe180', 14: 'Joe270', 15: 'Student'} 
 
 #%% fitting
 
-def fit(cop, u):
+def fit(cop:int, u: np.ndarray) -> CORR_PARAM_TYPE:
     """
     Fits a specific copula to data.
     
@@ -70,13 +71,14 @@ def fit(cop, u):
         # Perform Cholesky decomposition
         R= np.linalg.cholesky(R)
 
-        def invcdf(p):
+        def invcdf(p: float) -> float:
             if p <= 0.9:
                 q = (1000 / 9) * p
             else:
                 q = 100 * (1 - 10 * (p - 0.9))**-5
             return q
 
+        # TODO: type hints for negloglike
         def negloglike(mu_, u, R):
             nu_ = invcdf(mu_)
             t_values = st.t.ppf(u, nu_)
@@ -101,7 +103,7 @@ def fit(cop, u):
 #%% best fit
 
 
-def bestcop(cops, u):
+def bestcop(cops: List[int], u: np.ndarray) -> Tuple[int, CORR_PARAM_TYPE, float]:
     """
     Fits the best copula to data based on a selected list of copulas to fit to using the AIC.
     
@@ -140,7 +142,7 @@ def bestcop(cops, u):
 
 #%%Copula random
 
-def random(cop, par, n): 
+def random(cop: int, par: CORR_PARAM_TYPE, n:int) -> np.ndarray: 
     """
     Generates random numbers from a chosen copula with specific parameters.
     
@@ -170,7 +172,7 @@ def random(cop, par, n):
     if cop > 1 and cop < 6:
         v1 = np.random.uniform(0.00001,0.999999,n)
         v2 = np.random.uniform(0.00001,0.999999,n)
-        def equation2(w):
+        def equation2(w: np.ndarray) -> np.ndarray:
             return (w * (1-(np.log(w)/alpha))) - v2
         w_guess = v2
         w = newton(equation2, w_guess,maxiter=2000)
@@ -217,7 +219,7 @@ def random(cop, par, n):
     if  cop > 10 and cop < 15:
         v1 = np.random.uniform(0.00001,0.999999,n)
         v2 = np.random.uniform(0.00001,0.999999,n)
-        def equation2(w):
+        def equation2(w:np.ndarray) -> np.ndarray:
             return w - ((1/alpha) * ((np.log((1-(1-w)**alpha))*(1-(1-w)**alpha))/((1-w)**(alpha-1)))) - v2
         w_guess = v2
         w = newton(equation2, w_guess,maxiter=2000)
@@ -255,7 +257,7 @@ def random(cop, par, n):
         
 #%% Copula conditional random
        
-def randomconditional(cop, ui, par, n, un = 1):
+def randomconditional(cop:int, ui:np.ndarray, par: CORR_PARAM_TYPE, n:int, un: Literal[1,2] = 1) -> np.ndarray:
 
     """
     Generates conditional random numbers from a chosen copula with specific parameters.
@@ -404,7 +406,7 @@ def randomconditional(cop, ui, par, n, un = 1):
     return uii
 
 #%% CDF
-def CDF(cop, u, par):
+def CDF(cop:int, u: np.ndarray, par: CORR_PARAM_TYPE) -> np.ndarray:
     
     """
     Computes the cumulative distribution function.
@@ -521,8 +523,8 @@ def CDF(cop, u, par):
     return p
 
 #%% PDF
-    
-def PDF(cop, u, par):
+
+def PDF(cop:int, u:np.ndarray, par:CORR_PARAM_TYPE) -> np.ndarray:
     
     """
     Computes the probability density function.
@@ -623,7 +625,7 @@ def PDF(cop, u, par):
         
 #%% h function
 
-def hfunc(cop, u1, u2, par, un = 1):
+def hfunc(cop: int, u1:np.ndarray, u2:np.ndarray, par: CORR_PARAM_TYPE, un: Literal[1,2] = 1) -> np.ndarray:
     """
     Computes the h-function (conditional CDF) of a copula with respect to variable u1 or u2.
     
@@ -773,7 +775,7 @@ def hfunc(cop, u1, u2, par, un = 1):
 
 #%% h-inverse func
 
-def hfuncinverse(cop, ui, y, par, un = 1):
+def hfuncinverse(cop:int, ui: np.ndarray, y:np.ndarray, par:CORR_PARAM_TYPE, un: Literal[1,2] = 1) -> np.ndarray:
     """
     Computes the inverse h-function (inverse conditional CDF) of a copula with respect to variable u1 or u2.
     
@@ -812,11 +814,11 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         else:
             uii_guess = 1- ui
         if un == 1:
-            def equation(u2):
+            def equation(u2: np.ndarray) -> np.ndarray:
                 return hfunc(cop, ui, u2, par, un) - y
             uii = newton(equation, uii_guess,maxiter=200000, tol=1e-10)
         if un == 2:
-            def equation(u1):
+            def equation(u1: np.ndarray) -> np.ndarray:
                 return hfunc(cop, u1, ui, par, un) - y
             uii = newton(equation, uii_guess,maxiter=200000, tol=1e-10)
         
@@ -863,12 +865,12 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         else:
             uii_guess = 1- ui
         if un == 1:
-            def equation(u2):
+            def equation(u2: np.ndarray) -> np.ndarray:
                 return hfunc(cop, ui, u2, par, un) - y 
            
             uii = newton(equation, uii_guess,maxiter=2000, tol=1e-10)
         if un == 2:
-            def equation(u1):
+            def equation(u1: np.ndarray) -> np.ndarray:
                 return hfunc(cop, u1, ui, par, un) - y
             uii = newton(equation, uii_guess,maxiter=2000, tol=1e-10)
             
@@ -884,7 +886,7 @@ def hfuncinverse(cop, ui, y, par, un = 1):
     return uii
 
 #%% negative likelyhood
-def neg_likelihood(par,cop,u):
+def neg_likelihood(cop:int,u: np.ndarray, par: CORR_PARAM_TYPE) -> float:
     """
     Computes the negative likelihood function.
     

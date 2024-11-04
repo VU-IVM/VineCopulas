@@ -15,7 +15,7 @@ from itertools import product
 import networkx as nx
 import matplotlib.pyplot as plt
 from vinecopulas.bivariate import *
-
+from typing import List, Tuple, Literal, Union, Optional
 # %% Copulas
 
 copulas = {
@@ -40,7 +40,7 @@ copulas = {
 # %% fitting vinecopula
 
 
-def fit_vinecop(u1, copsi, vine="R", printing=True):
+def fit_vinecop(u1: np.ndarray, copsi: List[int], vine: Literal["R", "C", "D", nx.Graph]="R", printing:bool=True) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Fit a regular vine copula to data.
 
@@ -95,12 +95,14 @@ def fit_vinecop(u1, copsi, vine="R", printing=True):
                 )  # create a new dataframe where the row with the highest ktau is the first row
             else:
                 if (
-                    order1.v1[i] in list(order1.v2[:i])
-                    or order1.v1[i] in list(order1.v1[:i])
+                    order1.v1[i] in list(order2.v2[:i])
+                    or order1.v1[i] in list(order2.v1[:i])
                 ) and (
-                    order1.v2[i] in list(order1.v2[:i])
-                    or order1.v2[i] in list(order1.v1[:i])
-                ):  # see if both v1i and v2i are already in order2, first rows with unique variables need to be added to ensure all variables are included
+                    order1.v2[i] in list(order2.v2[:i])
+                    or order1.v2[i] in list(order2.v1[:i])
+                ):  # see if both v1i and v2i are already in order2, 
+                    # first rows with unique variables need to be 
+                    # added to ensure all variables are included
                     continue
                 else:
                     inde.append(i)  # add used rows to inde
@@ -254,6 +256,19 @@ def fit_vinecop(u1, copsi, vine="R", printing=True):
         order2 = order1[(order1.v1 == i) | (order1.v2 == i)].reset_index(
             drop=True
         )  # select the rows that include this variable
+    else:
+        # vine is a graph.
+        # TODO: confirm that it is a tree and that every column is included in the tree.
+        temp_order = []
+        for edge_src, edge_dest in vine.edges:
+            if edge_src > edge_dest:
+                # Flip them
+                edge_src, edge_dest = edge_dest, edge_src
+            ta_temp = order1.loc[(order1.v1 == edge_src) & (order1.v2 == edge_dest), "tauabs"]
+            assert len(ta_temp) == 1, "The edge is not in the order1"
+            temp_order.append({"v1": edge_src, "v2": edge_dest, "tauabs": ta_temp.values[0]})
+        order2 = pd.DataFrame(temp_order)
+        vine = "R"
 
     order1 = order2  # make order1 == the first tree
     del order2
@@ -1082,7 +1097,7 @@ def fit_vinecop(u1, copsi, vine="R", printing=True):
 
     return a, p, c
 
-def density_vinecop(u, M, P, C):
+def density_vinecop(u: np.ndarray, M: np.ndarray, P:np.ndarray, C:np.ndarray) -> np.ndarray:
     """
     Computes the density function of a vine copula.
 
@@ -1172,7 +1187,7 @@ def density_vinecop(u, M, P, C):
     
 
 # %% fitting vine copula with sspecific structure
-def fit_vinecopstructure(u1, copsi, a):
+def fit_vinecopstructure(u1: np.ndarray, copsi: List[int], a: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Fit a regular vine copula to data based on a known vine structure matrix.
 
@@ -1391,7 +1406,7 @@ def fit_vinecopstructure(u1, copsi, a):
 
 
 # %% Sampling vine copula
-def sample_vinecop(a, p, c, s):
+def sample_vinecop(a:np.ndarray, p:np.ndarray, c:np.ndarray, s:np.ndarray) -> np.ndarray:
     """
     Generate random samples from an R-vine.
 
@@ -1485,7 +1500,7 @@ def sample_vinecop(a, p, c, s):
 
 
 # %% Sampling conditonal vine copula
-def sample_vinecopconditional(a, p, c, s, Xc):
+def sample_vinecopconditional(a:np.ndarray, p:np.ndarray, c:np.ndarray, s:int, Xc:np.ndarray) -> np.ndarray:
     """
     Generate conditional samples from an R-vine based on a provided sampling order
 
@@ -1590,18 +1605,12 @@ def sample_vinecopconditional(a, p, c, s, Xc):
 # %%sampling orders
 
 
-def samplingorder(a):
+def samplingorder(a: np.ndarray) -> List[List[int]]:
     """
     Provides all the different sampling orders that are possible for the fitted vine-copula.
 
     Arguments:
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer refers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
-
-        *p* : Parameters of the bivariate copulae provided as a triangular matrix.
-
-        *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers referring to the copulae with the best fit. eg. a 1 refers to the gaussian copula (see...refer to where this information would be)
-
-
 
     Returns:
      *sortingorder* :  A list of the different sampling orders available for the fitted vine-copula
@@ -1669,7 +1678,7 @@ def samplingorder(a):
 # %%matrices of specific sampling order
 
 
-def samplingmatrix(a, c, p, sorder):
+def samplingmatrix(a:np.ndarray, c:np.ndarray, p:np.ndarray, sorder: List[int]) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Provides the triangular matrices for which the samples can be generated based on the specific sampling order.
 
@@ -1762,14 +1771,14 @@ def samplingmatrix(a, c, p, sorder):
 # %%
 
 
-def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
+def fit_conditionalvine(u1: np.ndarray, vint: Union[int, List[int]], copsi: List[int], vine: Literal["R", "D", "C", nx.Graph]="R", condition: Literal[1,2]=1, printing:bool=True):
     """
     Fit a regular vine copula which allows for a conditional sample of a variable of interest.
 
     Arguments:
         *u1* :  the data, provided as a numpy array where each column contains a seperate variable (eg. u1,u2,...,un), which have already been transferred to standard uniform margins (0<= u <= 1)
 
-        *vint* : the variables of interest, provided as an integere or list that refers to the variables column numbers in u1, where the first column is 0 and the second column is 1, etc.
+        *vint* : the variables of interest, provided as an integer or list that refers to the variables column numbers in u1, where the first column is 0 and the second column is 1, etc.
 
         *copsi* : A list of integers referring to the copulae of interest for which the fit has to be evauluated in the vine copula. eg. a list of [1, 10] refers to the Gaussian and Frank copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
 
@@ -1786,6 +1795,9 @@ def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
       *c* : The types of the bivariate copulae provided as a triangular matrix, composed of integers referring to the copulae with the best fit. eg. a 1 refers to the gaussian copula  (see `Table 1 <https://vinecopulas.readthedocs.io/en/latest/vinecopulas.html#Fitting-a-Vine-Copula>`__).
 
     """
+    if isinstance(vine, nx.Graph):
+        raise NotImplementedError("Only vine=R, D, or C are currently supported")
+    # TODO: Add support for vine as a graph
 
     # Reference: Dißmann et al. 2013 adapted
     dimen = u1.shape[1]  # number of variables (number of columns)
@@ -3464,21 +3476,18 @@ def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
 # %%
 
 
-def plotvine(a, plottitle=None, variables=None, savepath=None):
+def plotvine(a: np.ndarray, plottitle: Optional[str]=None, variables: Optional[List[str]]=None, savepath: Optional[str]=None):
     """
     Plots the vine structure
 
     Arguments:
         *a* : The vine tree structure provided as a triangular matrix, composed of integers. The integer refers to different variables depending on which column the variable was in u1, where the first column is 0 and the second column is 1, etc.
 
+        *variables* : list of variables
+
         *pltotitle* : title of the plot
 
         *savepath* : path to save the plot
-
-    Returns:
-     *plot*
-
-
 
     """
     dimen = a.shape[0]  # dimension of copula
