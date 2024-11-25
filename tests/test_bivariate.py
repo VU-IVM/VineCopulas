@@ -1112,6 +1112,7 @@ class TestJoe180(unittest.TestCase):
         assert cop == self.copula
 
 
+
 # %% Joe270
 class TestJoe270(unittest.TestCase):
     def setUp(self):

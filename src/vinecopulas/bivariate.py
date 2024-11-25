@@ -17,10 +17,12 @@ from scipy.special import gammaln
 from scipy.linalg import cholesky
 from itertools import product
 import sys
+from scipy import optimize
 
 #%% Copulas
 
-copulas = {1: 'Gaussian', 2 : 'Gumbel0', 3 :'Gumbel90' , 4 : 'Gumbel180', 5 : 'Gumbel270', 6 : 'Clayton0', 7 : 'Clayton90', 8 : 'Clayton180', 9: 'Clayton270', 10: 'Frank', 11: 'Joe0', 12: 'Joe90', 13: 'Joe180', 14: 'Joe270', 15: 'Student'} 
+copulas = { 1: 'Gaussian', 2 : 'Gumbel0', 3 :'Gumbel90' , 4 : 'Gumbel180', 5 : 'Gumbel270', 6 : 'Clayton0', 7 : 'Clayton90', 8 : 'Clayton180', 9: 'Clayton270', 10: 'Frank', 11: 'Joe0', 12: 'Joe90', 13: 'Joe180', 14: 'Joe270', 15: 'Student'} 
+
 
 #%% fitting
 
@@ -44,11 +46,14 @@ def fit(cop, u):
     if cop == 1:
         par = np.corrcoef(st.norm.ppf(u),rowvar=False)[0][1]
         
-    # Gumbel and Clayton all rotations
-    if cop > 1 and cop < 10:
+    # Gumbel all rotations
+    if cop > 1 and cop < 7:
         res = minimize_scalar(neg_likelihood, bounds=(1, 20), args=(cop, u), method='bounded')
         par = res.x
-        
+    # Clayton all rotations
+    if cop > 6 and cop < 10:
+        res = minimize_scalar(neg_likelihood, bounds=(-1, 20), args=(cop, u), method='bounded')
+        par = res.x
     # Frank
     if cop == 10:
        res = minimize_scalar(neg_likelihood, bounds=(-20, 20), args=(cop, u), method='bounded')
@@ -339,6 +344,15 @@ def randomconditional(cop, ui, par, n, un = 1):
         elif cop == 9  and un == 1:
             uii = 1 - uii
         
+        try:
+            if np.isnan(uii) == True:
+                uii =  0.00001
+            if uii < 0.00001:
+                uii =  0.00001
+        except:
+            uii[np.isnan(uii)] = 0.00001
+            uii[uii<0.00001] = 0.00001
+        
   
  
     
@@ -354,7 +368,7 @@ def randomconditional(cop, ui, par, n, un = 1):
         else:
             uii = p
         
-    
+
     # Joe
     if  cop > 10 and cop < 15:
         # 90
@@ -465,20 +479,53 @@ def CDF(cop, u, par):
     # Reference: Schepsmeier and Stöber, 2013
     elif cop == 6:
         p = ((u1 ** -alpha) + (u2 ** -alpha) - 1)**(-1/alpha)
+        try:
+            if np.isnan(p) == True:
+                p =  0.00001
+            if p < 0.00001:
+                p =  0.00001
+        except:
+            p[np.isnan(p)] = 0.00001
+            p[p<0.00001] = 0.00001
+            
     # Clayton 90 degrees
     elif cop == 7:
         u1 = 1 - u1
         p = u2 - ((u1 ** -alpha) + (u2 ** -alpha) - 1)**(-1/alpha)
+        try:
+            if np.isnan(p) == True:
+                p =  0.00001
+            if p < 0.00001:
+                p =  0.00001
+        except:
+            p[np.isnan(p)] = 0.00001
+            p[p<0.00001] = 0.00001
     # Clayton 180 degrees
     elif cop == 8:
         u1_u2 = u1 + u2
         u2 = 1 - u2
         u1 = 1 - u1
         p =  u1_u2 -  1 + (((u1 ** -alpha) + (u2 ** -alpha) - 1)**(-1/alpha))
+        try:
+            if np.isnan(p) == True:
+                p =  0.00001
+            if p < 0.00001:
+                p =  0.00001
+        except:
+            p[np.isnan(p)] = 0.00001
+            p[p<0.00001] = 0.00001
     # Clayton 270 degrees
     elif cop == 9:
         u2 = 1 - u2
         p = u1 - ((u1 ** -alpha) + (u2 ** -alpha) - 1)**(-1/alpha)
+        try:
+            if np.isnan(p) == True:
+                p =  0.00001
+            if p < 0.00001:
+                p =  0.00001
+        except:
+            p[np.isnan(p)] = 0.00001
+            p[p<0.00001] = 0.00001
     
     # Frank
     # Reference: Schepsmeier and Stöber, 2013
@@ -585,6 +632,7 @@ def PDF(cop, u, par):
         elif cop == 9:
             u2 = 1 - u2
         y = ((1+alpha) * (u1 * u2) ** (-1 - alpha)) / ( ((u1 ** -alpha) + (u2 ** -alpha) - 1)**((1/alpha)  + 2))
+
     
     # Frank
     elif cop == 10:
@@ -642,10 +690,22 @@ def hfunc(cop, u1, u2, par, un = 1):
      *y* : A 1-d numpy array containing the h-function of the copula evaluated with respect to u1 or u2.
       
     """
-    u1[u1 <=0] = 0.000001
-    u2[u2 <=0] = 0.000001
-    u2[u2 >=1] = 0.999999
-    u1[u1 >=1] = 0.999999
+    try:
+        
+        u1[u1 <=0] = 0.000001
+        u2[u2 <=0] = 0.000001
+        u2[u2 >=1] = 0.999999
+        u1[u1 >=1] = 0.999999   
+    except:
+        if u1 < 0.0001:
+            u1 = 0.0001
+        if u2 > 0.9999:
+            u2 = 0.9999
+        if u2 < 0.0001:
+            u2 = 0.0001
+        if u1 > 0.9999:
+            u1 = 0.9999
+    
     # Gaussian
     if cop == 1:
         rho = par
@@ -704,18 +764,43 @@ def hfunc(cop, u1, u2, par, un = 1):
             y = 1/(u1*u1**alpha*(-1 + u2**(-alpha) + u1**(-alpha))*(-1 + u2**(-alpha) + u1**(-alpha))**(1/alpha))
         if  un == 2:
             y = 1/(u2*u2**alpha*(-1 + u2**(-alpha) + u1**(-alpha))*(-1 + u2**(-alpha) + u1**(-alpha))**(1/alpha))
+        try:
+            if np.isnan(y) == True:
+                y =  0.00001
+            if y < 0.00001:
+                y =  0.00001
+        except:
+            y[np.isnan(y)] = 0.00001
+            y[y<0.00001] = 0.00001
     #Clayton 90 degrees
     if cop == 7:
         if un == 1:
             y = 1/((1 - u1)*(1 - u1)**alpha*(-1 + (1 - u1)**(-alpha) + u2**(-alpha))*(-1 + (1 - u1)**(-alpha) + u2**(-alpha))**(1/alpha))
         elif un == 2:
             y =   1 - 1/(u2*u2**alpha*(-1 + (1 - u1)**(-alpha) + u2**(-alpha))*(-1 + (1 - u1)**(-alpha) + u2**(-alpha))**(1/alpha)) 
+        try:
+            if np.isnan(y) == True:
+                y =  0.00001
+            if y < 0.00001:
+                y =  0.00001
+        except:
+            y[np.isnan(y)] = 0.00001
+            y[y<0.00001] = 0.00001
+
     #Clayton 180 degrees
     if cop == 8:
         if un == 1:
             y = 1 - 1/((1 - u1)*(1 - u1)**alpha*(-1 + (1 - u2)**(-alpha) + (1 - u1)**(-alpha))*(-1 + (1 - u2)**(-alpha) + (1 - u1)**(-alpha))**(1/alpha))
         elif un == 2:
             y = 1 - 1/((1 - u2)*(1 - u2)**alpha*(-1 + (1 - u2)**(-alpha) + (1 - u1)**(-alpha))*(-1 + (1 - u2)**(-alpha) + (1 - u1)**(-alpha))**(1/alpha))
+        try:
+            if np.isnan(y) == True:
+                y =  0.00001
+            if y < 0.00001:
+                y =  0.00001
+        except:
+            y[np.isnan(y)] = 0.00001
+            y[y<0.00001] = 0.00001
     # Clayton 270 degrees
     if cop == 9:
         if un == 1:
@@ -723,6 +808,14 @@ def hfunc(cop, u1, u2, par, un = 1):
           
         elif un == 2:
             y =  1/((1 - u2)*(1 - u2)**alpha*(-1 + (1 - u2)**(-alpha) + u1**(-alpha))*(-1 + (1 - u2)**(-alpha) + u1**(-alpha))**(1/alpha))
+        try:
+            if np.isnan(y) == True:
+                y =  0.00001
+            if y < 0.00001:
+                y =  0.00001
+        except:
+            y[np.isnan(y)] = 0.00001
+            y[y<0.00001] = 0.00001
 
     # Frank
     if cop == 10:
@@ -768,7 +861,15 @@ def hfunc(cop, u1, u2, par, un = 1):
             x2 = st.t.ppf(u1, df) 
         inner = (x1 - (alpha * x2))/ np.sqrt(((df+x2**2)*(1-alpha**2))/(df+1))
         y = st.t.cdf(inner, df = df+1)
-        
+    try:
+        if y < 0.0001:
+            y = 0.0001
+        if y > 0.9999:
+            y = 0.9999
+    except:
+        y[y < 0.0001] = 0.0001
+        y[y > 0.9999] = 0.9999
+   
     return y 
 
 #%% h-inverse func
@@ -805,6 +906,14 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         alpha = par
     #Gumbel
     if cop > 1 and cop < 6:
+        y = np.array(np.round(y, 3))
+       # print(y)
+        y[y < 0.001] = 0.001
+        y[y > 0.999] = 0.999
+        ui = np.array(np.round(ui, 3))
+       # print(y)
+        ui[ui < 0.001] = 0.001
+        ui[ui > 0.999] = 0.999
         # 0 degrees or 180 degrees
         if cop == 2 or cop == 4:
             uii_guess = ui
@@ -814,14 +923,123 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         if un == 1:
             def equation(u2):
                 return hfunc(cop, ui, u2, par, un) - y
-            uii = newton(equation, uii_guess,maxiter=200000, tol=1e-10)
+            if len(ui) == 1:
+                try:
+                    uii = optimize.brentq(equation, 0.0001, 0.9999)
+                except:
+                    try:
+                        uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                    except:
+                        pass
+                        try:
+                            uii_guess = 1 - uii_guess
+                            uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                        except:
+                            pass
+                    
+
+                            for uii_guess in [0.001,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.9999]:
+                                try:
+                                    uii = newton(equation, np.array([uii_guess]),maxiter=200000, tol=1e-6)
+                                    break
+                                except:
+                                    pass
+                            
+                            try:
+                                k = uii
+                            except:
+                                print(ui)
+                                print(y)
+                                print(cop)
+            else:
+                try:
+                    uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                except:
+                    pass
+                    try:
+                        uii_guess = 1 - uii_guess
+                        uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                    except:
+                        pass
+                
+
+                    for uii_guess in [0.001,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.9999]:
+                        try:
+                            uii = newton(equation, np.array([uii_guess]),maxiter=200000, tol=1e-6)
+                            break
+                        except:
+                            pass
+                        
+                    try:
+                        k = uii
+                    except:
+                        print(ui)
+                        print(y)
+                        print(cop)
+                        print(par)
+            
+                
         if un == 2:
             def equation(u1):
                 return hfunc(cop, u1, ui, par, un) - y
-            uii = newton(equation, uii_guess,maxiter=200000, tol=1e-10)
-        
-        return uii
-        
+            if len(ui) == 1:
+                try:
+                    uii = optimize.brentq(equation, 0.0001, 0.9999)
+                except:
+                    try:
+                        uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                    except:
+                        pass
+                        try:
+                            uii_guess = 1 - uii_guess
+                            uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                        except:
+                            pass
+                    
+
+                            for uii_guess in [0.001,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.9999]:
+                                try:
+                                    uii = newton(equation, np.array([uii_guess]),maxiter=200000, tol=1e-6)
+                                    break
+                                except:
+                                    pass
+                            
+                            try:
+                                k = uii
+                            except:
+                                print(ui)
+                                print(y)
+                                print(cop)
+            else:
+                try:
+                    uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                except:
+                    pass
+                    try:
+                        uii_guess = 1 - uii_guess
+                        uii = newton(equation, uii_guess,maxiter=200000, tol=1e-6)
+                    except:
+                        pass
+                
+
+                    for uii_guess in [0.001,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.9999]:
+                        try:
+                            uii = newton(equation, np.array([uii_guess]),maxiter=200000, tol=1e-6)
+                            break
+                        except:
+                            pass
+                        
+                    try:
+                        k = uii
+                    except:
+                        print(ui)
+                        print(y)
+                        print(cop)
+                        print(par)
+            
+                
+            
+
     # Clayton
     if cop > 5 and cop < 10:
         # 0 degrees
@@ -849,6 +1067,14 @@ def hfuncinverse(cop, ui, y, par, un = 1):
             elif un == 2:
                 ui = 1 - ui
                 uii = ((ui**-alpha)*((v2**(-alpha/(1+alpha)))-1)+1)**(-1/alpha)
+        try:
+            if np.isnan(ui) == True:
+                uii =  0.00001
+            if uii < 0.00001:
+                uii =  0.00001
+        except:
+            uii[np.isnan(uii)] = 0.00001
+            uii[ui<0.00001] = 0.00001
                 
     # Frank
     if cop == 10:
@@ -880,7 +1106,16 @@ def hfuncinverse(cop, ui, y, par, un = 1):
         xy= st.t.ppf(y, df) 
         inner = xy * np.sqrt(((df+xi**2)*(1-alpha**2))/(df+1)) + (alpha*xi)
         uii = st.t.cdf(inner, df = df)
-        
+    try:
+        if uii < 0.0001: 
+            uii = 0.0001
+        if uii > 0.9999:
+            uii = 0.9999 
+    except:
+        uii[uii < 0.0001] = 0.0001
+        uii[uii > 0.9999] = 0.9999
+   
+       
     return uii
 
 #%% negative likelyhood
