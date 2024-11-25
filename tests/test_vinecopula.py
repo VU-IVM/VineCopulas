@@ -13,7 +13,6 @@ import numpy as np
 import unittest
 import pandas as pd
 
-
 # %%
 class Testvinecopula(unittest.TestCase):
     def setUp(self):

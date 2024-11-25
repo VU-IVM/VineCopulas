@@ -21,7 +21,6 @@ import sys
 
 # %% best fit discrete distribution
 
-
 def best_fit_distributiondiscrete(data, bound=False, criterion="BIC"):
     """
     Fits the best discrete distribution to data.

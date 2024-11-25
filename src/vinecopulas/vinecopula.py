@@ -36,7 +36,6 @@ copulas = {
     15: "Student",
 }
 
-
 # %% fitting vinecopula
 
 
