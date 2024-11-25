@@ -1546,7 +1546,7 @@ def sample_vinecopconditional(a, p, c, s, Xc):
     # combine random uniform data with conditional input
     U = np.hstack(
         (
-            np.random.uniform(0, 1, (s, M.shape[0] - len(Xc))),
+            np.random.uniform(0.0001, 0.99999, (s, M.shape[0] - len(Xc))),
             np.flip(np.tile(Xc, (s, 1)).copy(), 1),
         )
     )
@@ -1557,6 +1557,7 @@ def sample_vinecopconditional(a, p, c, s, Xc):
     # sampling algorithm
     for k in range(n)[::-1]:
         for i in range(k + 1, n + 1):
+            i = int(i)
             if M[i, k] == Mm[i, k]:
                 Z2[:, i, k] = Vdir[:, i, int(n - Mm[i, k])]
             else:
@@ -1565,16 +1566,21 @@ def sample_vinecopconditional(a, p, c, s, Xc):
                 Vdir[:, n, k] = hfuncinverse(
                     int(C[i, k]), Z2[:, i, k], Vdir[:, n, k], P[i, k], un=2
                 )
+
+  
         X[:, int(n - k)] = Vdir[:, n, k]
         for i in range(k + 1, n + 1)[::-1]:
             Z1[:, i, k] = Vdir[:, i, k]
+            
             Vdir[:, int(i - 1), k] = hfunc(
                 int(C[i, k]), Z1[:, i, k], Z2[:, i, k], P[i, k], un=2
             )
+            
             Vindir[:, int(i - 1), k] = hfunc(
                 int(C[i, k]), Z1[:, i, k], Z2[:, i, k], P[i, k], un=1
             )
-
+           
+    
     # Put X in the original order of the data
     replacedf = pd.DataFrame(list(replace.items()), columns=["Original", "Replacement"])
     replacedf = replacedf.sort_values(by="Original")
