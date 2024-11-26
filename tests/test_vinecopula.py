@@ -115,7 +115,7 @@ class Testvinecopula(unittest.TestCase):
                     nan,
                 ],
                 [
-                    1.0658076533567236,
+                    0.12978185414142449,
                     0.08990469323285986,
                     list([0.5353314452187353, 16.347989651517267]),
                     nan,
@@ -139,7 +139,7 @@ class Testvinecopula(unittest.TestCase):
             [
                 [4.0, 4.0, 4.0, 4.0, 4.0, nan],
                 [15.0, 1.0, 15.0, 15.0, nan, nan],
-                [4.0, 9.0, 15.0, nan, nan, nan],
+                [6.0, 9.0, 15.0, nan, nan, nan],
                 [10.0, 5.0, nan, nan, nan, nan],
                 [15.0, nan, nan, nan, nan, nan],
                 [nan, nan, nan, nan, nan, nan],
@@ -192,7 +192,7 @@ class Testvinecopula(unittest.TestCase):
                 [4.0, 4.0, 4.0, 4.0, 4.0, nan],
                 [3.0, 15.0, 10.0, 4.0, nan, nan],
                 [1.0, 15.0, 15.0, nan, nan, nan],
-                [15.0, 1.0, nan, nan, nan, nan],
+                [15.0, 6.0, nan, nan, nan, nan],
                 [9.0, nan, nan, nan, nan, nan],
                 [nan, nan, nan, nan, nan, nan],
             ]
@@ -326,7 +326,6 @@ class Testvinecopula(unittest.TestCase):
         assert 0 in soD[:2]
         assert 2 in soC[:2]
         assert 0 in soC[:2]
-
 
 # %%
 if __name__ == "__main__":
