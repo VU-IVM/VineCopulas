@@ -46,11 +46,11 @@ def fit(cop, u):
         par = np.corrcoef(st.norm.ppf(u),rowvar=False)[0][1]
         
     # Gumbel all rotations
-    if cop > 1 and cop < 7:
+    if cop > 1 and cop < 6:
         res = minimize_scalar(neg_likelihood, bounds=(1, 20), args=(cop, u), method='bounded')
         par = res.x
     # Clayton all rotations
-    if cop > 6 and cop < 10:
+    if cop > 5 and cop < 10:
         res = minimize_scalar(neg_likelihood, bounds=(-1, 20), args=(cop, u), method='bounded')
         par = res.x
     # Frank
