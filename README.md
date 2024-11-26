@@ -77,3 +77,11 @@ Please look at our [Contributing Guidelines](https://github.com/VU-IVM/VineCopul
 If you encounter any bugs or issues while using `VineCopulas`, please report them by opening an *issue* in the GitHub repository. Be sure to provide detailed information about the problem, such as steps to reproduce it, including operating system and Python version.
 
 If you have any suggestions for improvements, or questions, please also raise an *issue*. 
+
+## Citing the Package
+--- 
+
+If you use the `VineCopulas` package in your work, please cite:
+
+Claassen, J. N., Koks, E. E., de Ruiter, M. C., Ward, P. J., & Jäger, W. S. (2024). VineCopulas: an open-source Python package for vine copula modelling. Journal of Open Source Software, 9(101), 6728. https://doi.org/10.21105/joss.06728
+
