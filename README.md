@@ -73,6 +73,7 @@ For more examples, please have a look at the [documentation](https://vinecopulas
 Please look at our [Contributing Guidelines](https://github.com/VU-IVM/VineCopulas/blob/02c24201411677f6968e0f0caefc749c74796715/CONTRIBUTING.md) if you are interested in contributing to this package.
 
 ## Asking Questions and Reporting Issues
+---
 
 If you encounter any bugs or issues while using `VineCopulas`, please report them by opening an *issue* in the GitHub repository. Be sure to provide detailed information about the problem, such as steps to reproduce it, including operating system and Python version.
 

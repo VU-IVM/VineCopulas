@@ -111,4 +111,3 @@ reproduce it, including operating system and Python version.
 
 If you have any suggestions for improvements, or questions, please also
 raise an *issue*.
-
