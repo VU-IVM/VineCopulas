@@ -2,7 +2,6 @@
 """
 Created on Wed Mar 13 17:49:04 2024
 
-
 """
 import warnings
 
@@ -13,7 +12,7 @@ import numpy as np
 import unittest
 import pandas as pd
 
-# %%
+#%%
 class Testvinecopula(unittest.TestCase):
     def setUp(self):
         datapath = "https://raw.githubusercontent.com/VU-IVM/vinecopula/develop/doc/sample_data.csv"  # path to data
@@ -327,6 +326,6 @@ class Testvinecopula(unittest.TestCase):
         assert 2 in soC[:2]
         assert 0 in soC[:2]
 
-# %%
+#%%
 if __name__ == "__main__":
     unittest.main()
