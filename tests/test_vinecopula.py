@@ -326,6 +326,8 @@ class Testvinecopula(unittest.TestCase):
         assert 2 in soC[:2]
         assert 0 in soC[:2]
 
+
 #%%
+
 if __name__ == "__main__":
     unittest.main()
