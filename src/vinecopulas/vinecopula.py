@@ -1765,8 +1765,6 @@ def samplingmatrix(a, c, p, sorder):
 
 
 # %%
-
-
 def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
     """
     Fit a regular vine copula which allows for a conditional sample of a variable of interest.
@@ -2176,42 +2174,44 @@ def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
                                 else:
                                     vi = order1.v1[i]  # select the new edge to connect to
                                 break
-            for i in l2:
-                if (
-                    order1.v1[i] == vj
-                    or order1.v2[i] == vi
-                    or order1.v1[i] == vi
-                    or order1.v2[i] == vj
-                ):  # find the rows which include at least one of the two variables from the previous edge
+            while len(order2) < u1.shape[1] -1:
+                for i in l2:
                     if (
-                        order1.v1[i] in inde or order1.v2[i] in inde
-                    ):  # check if variables have already been connected to other variables twice
-                        continue
-                    if (order1.v1[i] == vi and order1.v2[i] == vj) or (
-                        order1.v1[i] == vj and order1.v2[i] == vi
-                    ):  # skip rows that have already been used
-                        continue
-
-                    else:
-                        order2 = pd.concat(
-                            [order2, order1.loc[i].to_frame().T], ignore_index=True
-                        )  # if conditions are met, add this to the dataframe of the first tree
+                        order1.v1[i] == vj
+                        or order1.v2[i] == vi
+                        or order1.v1[i] == vi
+                        or order1.v2[i] == vj
+                    ):  # find the rows which include at least one of the two variables from the previous edge
                         if (
-                            order1.v1[i] == vj or order1.v2[i] == vj
-                        ):  # check which value has been used twice already
-                            inde.append(vj)  # add this value to inde
-                            if order1.v1[i] == vj:
-                                vj = order1.v2[i]  # select the new edge to connect to
-                            else:
-                                vj = order1.v1[i]  # select the new edge to connect to
-                        elif (
-                            order1.v1[i] == vi or order1.v2[i] == vi
-                        ):  # check which value has been used twice already
-                            inde.append(vi)  # add this value to inde
-                            if order1.v1[i] == vi:
-                                vi = order1.v2[i]  # select the new edge to connect to
-                            else:
-                                vi = order1.v1[i]  # select the new edge to connect to
+                            order1.v1[i] in inde or order1.v2[i] in inde
+                        ):  # check if variables have already been connected to other variables twice
+                            continue
+                        if (order1.v1[i] == vi and order1.v2[i] == vj) or (
+                            order1.v1[i] == vj and order1.v2[i] == vi
+                        ):  # skip rows that have already been used
+                            continue
+
+                        else:
+                            order2 = pd.concat(
+                                [order2, order1.loc[i].to_frame().T], ignore_index=True
+                            )  # if conditions are met, add this to the dataframe of the first tree
+                            if (
+                                order1.v1[i] == vj or order1.v2[i] == vj
+                            ):  # check which value has been used twice already
+                                inde.append(vj)  # add this value to inde
+                                if order1.v1[i] == vj:
+                                    vj = order1.v2[i]  # select the new edge to connect to
+                                else:
+                                    vj = order1.v1[i]  # select the new edge to connect to
+                            elif (
+                                order1.v1[i] == vi or order1.v2[i] == vi
+                            ):  # check which value has been used twice already
+                                inde.append(vi)  # add this value to inde
+                                if order1.v1[i] == vi:
+                                    vi = order1.v2[i]  # select the new edge to connect to
+                                else:
+                                    vi = order1.v1[i]  # select the new edge to connect to
+            
         else:
             inde = []  # lsit to put used variables in
             for j in range(dimen - 1):
@@ -3464,7 +3464,6 @@ def fit_conditionalvine(u1, vint, copsi, vine="R", condition=1, printing=True):
                 )
 
     return a, p, c
-
 
 # %%
 
